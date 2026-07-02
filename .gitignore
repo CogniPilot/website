@@ -1,0 +1,11 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+
+# Local dev
+node_modules/
+.cache/
+
+# Working screenshots (not part of the site)
+screenshots/
+uploads/
