@@ -15,6 +15,8 @@ const requiredFiles = [
   'site/blog/rumoca-naca-manifest.json',
   'site/blog/assets/airfoil-flow.mo',
   'site/blog/assets/airfoil-flow-viz.js',
+  'site/blog/assets/rumoca_naca_blog.webm',
+  'site/blog/assets/rumoca_naca_blog_poster.jpg',
 ];
 
 function fail(message) {
@@ -75,6 +77,11 @@ if (!post.includes('data-rumoca-guide-widget')) fail('Blog post is missing the R
 if (!post.includes('rumoca-guide-widget.js')) fail('Blog post is missing the guide widget loader.');
 if (!post.includes('rumoca-live.css')) fail('Blog post is missing the guide widget stylesheet.');
 if (!post.includes('rumoca-naca-manifest.json')) fail('Blog post is missing the Rumoca manifest reference.');
+if (!post.includes('assets/rumoca_naca_blog.webm')) fail('Blog post is missing the recorded NACA preview video.');
+if (!post.includes('around 10 seconds')) fail('Blog post should warn about first compile/setup time.');
+if (!post.includes('first-order motor model') || !post.includes('cross-domain optimization')) {
+  fail('Blog post should foreground the coupled differentiable motor/shape/PDE point.');
+}
 if (post.includes('Synthetic field preview') || post.includes('blog-rumoca-live-v1')) {
   fail('Blog post still contains the old fake/custom widget.');
 }

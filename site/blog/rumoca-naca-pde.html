@@ -215,6 +215,36 @@
       padding: 0 24px;
     }
     .guide-widget-section { margin-top: 54px; }
+    .demo-video-section { margin-top: 54px; }
+    .demo-video-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 14px;
+      color: var(--muted);
+      font: 12px "IBM Plex Mono", ui-monospace, monospace;
+    }
+    .demo-video-head b { color: var(--text); font-weight: 700; }
+    .demo-video-shell {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--panel);
+    }
+    .demo-video-shell video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #050910;
+    }
+    .demo-video-note {
+      margin: 0;
+      padding: 13px 16px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font: 12px/1.5 "IBM Plex Mono", ui-monospace, monospace;
+    }
     .guide-widget-head {
       display: flex;
       justify-content: space-between;
@@ -303,7 +333,7 @@
       <div>
         <div class="eyebrow">Rumoca / PDE / WebGPU</div>
         <h1>Array-native PDEs in the browser: the Rumoca NACA airfoil example</h1>
-        <p class="lead">The NACA 2412 demo is not just a pretty flow field. It is a compact example of where Rumoca is going: Modelica arrays in, structured compiler IRs through the middle, and GPU kernels out the other side.</p>
+        <p class="lead">The NACA 2412 demo is not just flow around a fixed airfoil. It mixes angle-of-attack motor dynamics, smooth shape deformation, and a PDE flow field in one differentiable array-native model that can run on the GPU.</p>
         <div class="meta">
           <span>July 3, 2026</span>
           <span>James Goppert</span>
@@ -315,10 +345,16 @@
     <article class="article">
       <p>Rumoca starts with a simple promise: write the physics once, preserve the semantics, and let different tools consume the representation they actually need. For flight software that matters because the model, the analysis, the controller, the generated code, and the verification artifacts should not drift apart.</p>
 
+      <p>The first important point is not the CFD. It is the coupling. The airfoil does not just sit there. A first-order motor model moves the commanded angle of attack toward the physical angle of attack, and first-order shape states move commanded camber, camber position, and thickness toward the actual airfoil geometry. Those actuator and shape states feed directly into the PDE model of the surrounding flow.</p>
+
+      <p>In plain language: Rumoca can keep the wing, the actuator, the shape change, and the fluid response in the same mathematical object. Automatic differentiation through PDE solvers is already an active area, but that is not the whole point here. The more interesting move is cross-domain optimization: forward- or reverse-mode AD can see aerodynamic states, actuator lag, and geometry parameters together. If I change camber here, what happens to drag? If I change angle of attack through this motor, what happens to lift later? The optimizer can ask those questions across the coupled system, not across a hand-maintained chain of separate tools.</p>
+
+      <p>The long-term direction is aircraft design as an optimization loop instead of a pile of disconnected tools. Today this example lets you steer a NACA airfoil in the browser. Tomorrow the same kind of model could help choose an airfoil, actuator schedule, or morphing shape for maximum endurance, maximum range, stall margin, thermal limits, or whatever the mission requires.</p>
+
       <p>The NACA airfoil PDE example in the Rumoca user guide is a useful stress test for that promise. It uses ordinary Modelica array variables and nested <code>for</code>-equations to express a method-of-lines discretization of a 2-D flow problem. Then the browser version compiles that model through Rumoca and runs the heavy path on the graphics card through WebGPU.</p>
 
       <div class="callout">
-        <p><strong>The core idea:</strong> Rumoca does not force a large array model to become anonymous scalar soup too early. It keeps enough source-proven array and loop structure alive that downstream targets can emit real kernels: WebGPU/WGSL today, CUDA and JAX-style differentiable backends as the pipeline matures.</p>
+        <p><strong>The core idea:</strong> Rumoca does not force a coupled physical model to become anonymous scalar soup too early. It keeps enough source-proven array, loop, actuator, and shape structure alive that downstream targets can emit real kernels: WebGPU/WGSL today, CUDA and JAX-style differentiable backends as the pipeline matures.</p>
       </div>
 
       <h2>The PDE Model</h2>
@@ -332,6 +368,8 @@
       </ul>
 
       <p>That second point is where the NACA part becomes more than geometry. The solid mask is not a hard on/off indicator. It is a smooth <code>tanh</code> transition around the airfoil surface. At low resolution this makes the visualization easier to read, but the deeper point is differentiability: a smooth mask gives nonzero sensitivities with respect to camber, camber position, thickness, and angle of attack near the boundary.</p>
+
+      <p>The live version also includes simple dynamics for the things a designer would actually command. The angle of attack is filtered by a first-order motor state, while camber, camber position, and thickness are filtered by first-order shape states. Those states are ordinary Modelica variables, so the flow solver sees a time-varying airfoil instead of a disconnected slider. That is what makes the example a small cross-domain system rather than a static visualization.</p>
 
       <pre><code class="language-modelica">parameter Integer NX = 30;
 parameter Integer NY = 18;
@@ -432,6 +470,25 @@ const result = await runGpuSimulation(gpu.adapter, prep, {
 
       <p>The strategic direction is straightforward: <strong>PDE today, neural ODEs tomorrow.</strong> Once a compiler can expose clean DAE and Solve forms, it becomes natural to connect physical models to differentiable programming workflows. A future neural ODE workflow should not require throwing away the Modelica model and rebuilding the system in a machine-learning framework. The physical model should remain the source of truth, while JAX, PyTorch, CasADi, CUDA, WGSL, or embedded targets receive representations designed for their job.</p>
 
+      <h2>See the Run First</h2>
+      <p>The live widget below is the real path, but first load has to fetch the pinned Rumoca package, initialize WebAssembly, compile the Modelica source, and set up the WebGPU kernels. On a typical laptop that can take around 10 seconds. The recording below shows the expected NACA airfoil result before you spend that time.</p>
+    </article>
+
+    <section class="wide demo-video-section" aria-label="Recorded Rumoca NACA airfoil demo">
+      <div class="demo-video-head">
+        <div><b>Recorded preview</b><br><span>AirfoilFlow running through the browser widget</span></div>
+        <span>WebM · 28 seconds</span>
+      </div>
+      <div class="demo-video-shell">
+        <video controls preload="metadata" playsinline poster="assets/rumoca_naca_blog_poster.jpg">
+          <source src="assets/rumoca_naca_blog.webm" type="video/webm">
+          Download the Rumoca NACA preview video: <a href="assets/rumoca_naca_blog.webm">rumoca_naca_blog.webm</a>.
+        </video>
+        <p class="demo-video-note">The recording is only a convenience preview. The widget below still compiles and runs the same guide example in your browser.</p>
+      </div>
+    </section>
+
+    <article class="article">
       <h2>Use the Exact User Guide Widget</h2>
       <p>The section below mounts the same mdBook live-example runner used by the Rumoca user guide. It loads the exact <code>@cognipilot/rumoca@0.9.9</code> npm package named in this post's manifest, then injects the guide's <code>modelica,interactive,gpu</code> AirfoilFlow block and its paired <code>js,rumoca-viz</code> visualization script. That gives this post the same editor, Simulate button, GPU checkbox, Interactive mode, Show DAE view, field picker, velocity overlays, and parameter tuners as the guide.</p>
     </article>
