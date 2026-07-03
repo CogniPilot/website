@@ -189,10 +189,10 @@ document.addEventListener('DOMContentLoaded', async function() {
           });
           const events = navLinks.find(function(a) { return a.textContent.trim() === 'Events'; });
           if (events) events.href = 'events/';
-          if (!Array.from(navGroup.querySelectorAll('a')).some(function(a) { return a.textContent.trim() === 'Overview'; })) {
+          if (!Array.from(navGroup.querySelectorAll('a')).some(function(a) { return a.textContent.trim() === 'Mission'; })) {
             const overview = document.createElement('a');
             overview.href = './';
-            overview.textContent = 'Overview';
+            overview.textContent = 'Mission';
             overview.setAttribute('style', 'transition:color .18s;');
             navGroup.insertBefore(overview, navGroup.querySelector('a') || null);
           }
