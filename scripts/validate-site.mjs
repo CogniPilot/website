@@ -7,6 +7,10 @@ const requiredFiles = [
   'site/index.html',
   'site/.nojekyll',
   'site/assets/cognipilot-logo-dark.png',
+  'site/assets/nxp-logo.svg',
+  'site/assets/purdue-university-logo.svg',
+  'site/events/index.html',
+  'site/membership/index.html',
   'site/blog/index.html',
   'site/blog/rumoca-naca-pde.html',
   'site/blog/rumoca-guide-widget.js',
@@ -67,6 +71,8 @@ if (!manifest.packageIntegrity || !manifest.packageShasum) {
 
 const post = read('site/blog/rumoca-naca-pde.html');
 const blogIndex = read('site/blog/index.html');
+const eventsIndex = read('site/events/index.html');
+const membershipIndex = read('site/membership/index.html');
 if (!blogIndex.includes('../assets/cognipilot-logo-dark.png')) {
   fail('Blog index header must use the CogniPilot logo asset.');
 }
@@ -84,6 +90,22 @@ if (!post.includes('first-order motor model') || !post.includes('cross-domain op
 }
 if (post.includes('Synthetic field preview') || post.includes('blog-rumoca-live-v1')) {
   fail('Blog post still contains the old fake/custom widget.');
+}
+for (const [name, page] of [
+  ['Blog index', blogIndex],
+  ['Events page', eventsIndex],
+  ['Membership page', membershipIndex],
+]) {
+  if (!page.includes('radial-gradient(1100px 620px') || !page.includes('max-width: 1240px')) {
+    fail(`${name} must use the Mission visual shell.`);
+  }
+  if (!page.includes('cognipilot-logo-dark.png') || !page.includes('github-link')) {
+    fail(`${name} is missing the shared top-level navigation shell.`);
+  }
+}
+if (!eventsIndex.includes('calendar.google.com/calendar/embed')) fail('Events page is missing the Google Calendar embed.');
+if (!membershipIndex.includes('assets/nxp-logo.svg') || !membershipIndex.includes('assets/purdue-university-logo.svg')) {
+  fail('Membership page is missing founding Platinum member logos.');
 }
 
 const home = read('site/index.html');

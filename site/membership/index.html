@@ -275,6 +275,99 @@
       .hero { grid-template-columns: 1fr; gap: 34px; min-height: auto; }
       .member-grid { grid-template-columns: 1fr; }
     }
+    @keyframes cp-blink { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+    body {
+      --line: rgba(255,255,255,.09);
+      --line2: rgba(255,255,255,.05);
+      --panel: rgba(255,255,255,.025);
+      --muted: #8a97a8;
+      --dim: #5c6774;
+      position: relative;
+      overflow-x: hidden;
+      background: var(--bg);
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(1100px 620px at 78% -8%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 60%),
+        radial-gradient(900px 500px at 0% 0%, rgba(111,141,255,.10), transparent 55%);
+    }
+    header {
+      z-index: 50;
+      background: rgba(6,9,15,.82);
+      border-bottom-color: var(--line);
+    }
+    nav {
+      width: min(100%, 1320px);
+      min-height: 66px;
+      padding: 10px 24px;
+    }
+    main {
+      max-width: 1240px;
+      padding: 96px 32px;
+    }
+    .pill {
+      min-height: auto;
+      padding: 7px 14px;
+      border-radius: 100px;
+      border-color: color-mix(in oklab, var(--accent) 35%, transparent);
+      background: color-mix(in oklab, var(--accent) 8%, transparent);
+      letter-spacing: .28em;
+    }
+    .pill::before {
+      width: 6px;
+      height: 6px;
+      box-shadow: 0 0 10px var(--accent);
+      animation: cp-blink 2.4s ease-in-out infinite;
+    }
+    .hero {
+      grid-template-columns: 1.15fr .85fr;
+      gap: 48px;
+      min-height: auto;
+      padding-bottom: 64px;
+    }
+    h1 {
+      margin: 26px 0 0;
+      font-size: clamp(38px, 5.4vw, 68px);
+      letter-spacing: -.02em;
+    }
+    .lead {
+      max-width: 540px;
+      margin: 24px 0 0;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+    .hero-card {
+      border-radius: 20px;
+      background: linear-gradient(120deg, rgba(53,224,216,.05), rgba(111,141,255,.04));
+    }
+    .page-section {
+      padding-top: 60px;
+      border-top-color: var(--line);
+    }
+    .content-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 36px;
+    }
+    .panel {
+      background: var(--panel);
+      border-color: var(--line);
+      border-radius: 16px;
+    }
+    footer {
+      background: rgba(0,0,0,.3);
+      border-top-color: var(--line);
+      padding: 48px 32px;
+    }
+    @media (max-width: 960px) {
+      main { padding: 64px 24px 72px; }
+      .hero, .content-grid { grid-template-columns: 1fr; }
+      .hero { padding-bottom: 48px; }
+    }
   </style>
 </head>
 <body>
