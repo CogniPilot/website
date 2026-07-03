@@ -87,9 +87,18 @@ if (post.includes('Synthetic field preview') || post.includes('blog-rumoca-live-
 }
 
 const home = read('site/index.html');
-const bootScript = home.match(/<script>([\s\S]*?)<\/script>/i);
-if (!bootScript) fail('Published homepage is missing its boot script.');
-new Function(bootScript[1]);
+if (home.includes('__bundler/manifest') || home.includes('installHomepageAdditions')) {
+  fail('Published homepage should be a static Mission page, not the old bundled shell.');
+}
+if (!home.includes('assets/cognipilot-logo-dark.png')) {
+  fail('Mission page header must use the CogniPilot logo asset.');
+}
+if (!home.includes('href="./" aria-current="page">Mission')) {
+  fail('Mission page must mark Mission as the active navigation item.');
+}
+if (!home.includes('membership/') || !home.includes('events/') || !home.includes('blog/')) {
+  fail('Mission page is missing one or more top-level navigation links.');
+}
 if (!home.includes('rumoca-naca-pde.html')) fail('Published homepage is missing the blog post link.');
 
 const source = read('site/blog/assets/airfoil-flow.mo');
