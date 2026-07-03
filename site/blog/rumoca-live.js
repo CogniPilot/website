@@ -669,6 +669,15 @@ self.onmessage = async (event) => {
     }
 
     async function loadModelicaLanguage(monaco) {
+        if (window.RUMOCA_LIVE_LANGUAGE_MODULE) {
+            try {
+                const module = await import(window.RUMOCA_LIVE_LANGUAGE_MODULE);
+                module.registerModelicaLanguage(monaco);
+                return;
+            } catch (error) {
+                console.warn('rumoca-live: custom Modelica language module failed:', error);
+            }
+        }
         const root = bookRoot();
         for (const candidate of LANGUAGE_MODULE_CANDIDATES) {
             try {

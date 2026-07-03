@@ -63,6 +63,9 @@ async function main() {
   if (manifest.monacoBase) {
     window.RUMOCA_LIVE_MONACO_BASE = manifest.monacoBase;
   }
+  if (manifest.languageModule) {
+    window.RUMOCA_LIVE_LANGUAGE_MODULE = manifest.languageModule;
+  }
 
   const modelUrl = new URL(manifest.modelSource, manifestUrl);
   const vizUrl = new URL(manifest.vizSource, manifestUrl);

@@ -117,6 +117,10 @@ if (!manifest.monacoBase || !manifest.monacoBase.includes('monaco-editor@0.45.0'
   fail('Rumoca manifest must pin the Monaco editor base to monaco-editor@0.45.0.');
 }
 await checkHead(new URL('vs/loader.js', manifest.monacoBase).href);
+if (!manifest.languageModule || !manifest.languageModule.includes(`${manifest.packageName}@${manifest.rumocaVersion}/modelica_language.js`)) {
+  fail('Rumoca manifest must pin the Modelica language module to the exact Rumoca npm package.');
+}
+await checkHead(manifest.languageModule);
 for (const base of manifest.runtimeBases) {
   if (base.includes('@latest') || !base.includes(`${manifest.packageName}@${manifest.rumocaVersion}`)) {
     fail(`Runtime base is not pinned to the exact package version: ${base}`);
