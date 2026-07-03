@@ -11,6 +11,7 @@
   <meta property="og:site_name" content="CogniPilot">
   <meta property="og:title" content="Array-native PDEs in the browser: the Rumoca NACA airfoil example">
   <meta property="og:description" content="PDE today, neural ODEs tomorrow: how Rumoca keeps Modelica arrays intact from source to WebGPU kernels.">
+  <link rel="stylesheet" href="rumoca-live.css">
   <style>
     :root {
       --bg: #06090f;
@@ -26,6 +27,11 @@
       --amber: #f2c33a;
       --red: #ef5a5f;
       --green: #46c877;
+      --fg: var(--text);
+      --quote-bg: #050910;
+      --table-border-color: var(--line);
+      --table-header-bg: rgba(255,255,255,.035);
+      --mono-font: "IBM Plex Mono", ui-monospace, monospace;
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -52,37 +58,43 @@
       backdrop-filter: blur(14px);
     }
     nav {
-      max-width: 1180px;
+      width: 100%;
+      min-height: 92px;
       margin: 0 auto;
-      padding: 14px 24px;
+      padding: 20px 44px;
       display: flex;
       align-items: center;
-      gap: 26px;
+      gap: 28px;
     }
     .brand {
-      font-family: "IBM Plex Mono", ui-monospace, monospace;
-      font-weight: 700;
-      letter-spacing: .16em;
-      color: var(--text);
+      display: flex;
+      align-items: center;
     }
+    .brand img { height: 50px; width: auto; display: block; }
     .links {
       margin-left: auto;
       display: flex;
       flex-wrap: wrap;
-      gap: 22px;
+      align-items: center;
+      gap: 42px;
       color: var(--muted);
-      font: 13px "IBM Plex Mono", ui-monospace, monospace;
+      font: 16px "IBM Plex Mono", ui-monospace, monospace;
+      letter-spacing: .08em;
     }
     .links a:hover { color: var(--accent); }
+    .github-link {
+      padding: 16px 24px;
+      border-radius: 12px;
+      background: var(--accent);
+      color: #04120f;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
     main { padding-bottom: 88px; }
     .hero {
-      max-width: 1180px;
+      max-width: 980px;
       margin: 0 auto;
       padding: 76px 24px 34px;
-      display: grid;
-      grid-template-columns: minmax(0, .92fr) minmax(360px, .68fr);
-      gap: 42px;
-      align-items: center;
     }
     .eyebrow {
       color: var(--accent);
@@ -112,50 +124,6 @@
       font: 12px "IBM Plex Mono", ui-monospace, monospace;
       letter-spacing: .08em;
       text-transform: uppercase;
-    }
-    .hero-visual {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #07101a;
-      overflow: hidden;
-    }
-    .field-toolbar {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      padding: 14px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(255,255,255,.03);
-    }
-    .control {
-      display: grid;
-      gap: 6px;
-      color: var(--muted);
-      font: 12px "IBM Plex Mono", ui-monospace, monospace;
-    }
-    .control span { display: flex; justify-content: space-between; gap: 10px; }
-    input[type="range"], select {
-      width: 100%;
-      accent-color: var(--accent);
-      color: var(--text);
-      background: #0a111c;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-    }
-    .hero-visual canvas {
-      display: block;
-      width: 100%;
-      height: min(52vw, 410px);
-      min-height: 330px;
-    }
-    .surface-status {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 10px 14px;
-      border-top: 1px solid var(--line);
-      color: var(--dim);
-      font: 12px "IBM Plex Mono", ui-monospace, monospace;
     }
     .article {
       max-width: 860px;
@@ -246,85 +214,27 @@
       margin: 50px auto 0;
       padding: 0 24px;
     }
-    .runtime-panel {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      overflow: hidden;
-      background: var(--panel);
-    }
-    .runtime-bar {
+    .guide-widget-section { margin-top: 54px; }
+    .guide-widget-head {
       display: flex;
       justify-content: space-between;
       gap: 18px;
-      padding: 13px 16px;
-      color: var(--muted);
-      border-bottom: 1px solid var(--line);
-      font: 12px "IBM Plex Mono", ui-monospace, monospace;
-    }
-    .runtime-body {
-      display: grid;
-      grid-template-columns: minmax(0, .72fr) minmax(320px, .58fr);
-      gap: 0;
-    }
-    .runtime-copy {
-      padding: 24px;
-      border-right: 1px solid var(--line);
-    }
-    .runtime-copy p {
-      margin: 0 0 16px;
-      color: var(--muted);
-      font-size: 15.5px;
-    }
-    .runtime-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 18px;
-    }
-    .runtime-kv {
-      padding: 12px;
-      border: 1px solid var(--line2);
-      border-radius: 8px;
-      background: rgba(255,255,255,.025);
+      align-items: end;
+      margin-bottom: 14px;
       color: var(--muted);
       font: 12px "IBM Plex Mono", ui-monospace, monospace;
     }
-    .runtime-kv b {
-      display: block;
-      margin-bottom: 6px;
-      color: var(--text);
-      font-weight: 600;
-    }
-    .runtime-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 20px;
-    }
-    .runtime-button {
-      border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
+    .guide-widget-head b { color: var(--text); font-weight: 700; }
+    .guide-widget-head a { color: var(--accent); }
+    .guide-widget-shell {
+      border: 1px solid var(--line);
       border-radius: 8px;
-      background: color-mix(in srgb, var(--accent) 14%, #08101a);
-      color: var(--text);
-      padding: 10px 13px;
-      cursor: pointer;
-      font: 700 12px "IBM Plex Mono", ui-monospace, monospace;
+      background: var(--panel);
+      padding: 1px;
     }
-    .runtime-button:hover { border-color: var(--accent); }
-    .runtime-log {
-      padding: 18px;
-      min-height: 260px;
-      max-height: 420px;
-      overflow: auto;
-      background: #050910;
-      color: #d7e4ef;
-      font: 12px/1.55 "IBM Plex Mono", ui-monospace, monospace;
-    }
-    .runtime-result {
-      margin-top: 16px;
-      color: var(--accent);
-      font: 13px/1.5 "IBM Plex Mono", ui-monospace, monospace;
-    }
+    .guide-widget-shell > pre { margin: 0; }
+    .guide-widget-shell .rumoca-live { margin: 0; border-color: var(--line); background: var(--panel); }
+    .guide-widget-shell .rumoca-live-editor { min-height: 22rem; }
     .refs {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -358,29 +268,32 @@
       .stage:nth-child(2) { border-right: 0; }
       .stage:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
       .refs { grid-template-columns: 1fr; }
-      .runtime-body { grid-template-columns: 1fr; }
-      .runtime-copy { border-right: 0; border-bottom: 1px solid var(--line); }
     }
     @media (max-width: 620px) {
-      nav { flex-wrap: wrap; }
-      .links { width: 100%; margin-left: 0; justify-content: space-between; font-size: 12px; }
-      .field-toolbar { grid-template-columns: 1fr; }
+      nav { min-height: auto; flex-wrap: wrap; padding: 16px 20px; }
+      .brand img { height: 38px; }
+      .links { width: 100%; margin-left: 0; justify-content: flex-start; gap: 16px; overflow-x: auto; font-size: 12px; }
+      .github-link { padding: 10px 14px; border-radius: 8px; }
       .pipeline { grid-template-columns: 1fr; }
       .stage, .stage:nth-child(2) { border-right: 0; border-bottom: 1px solid var(--line); min-height: auto; }
       .stage:last-child { border-bottom: 0; }
-      .surface-status { flex-direction: column; }
     }
   </style>
 </head>
 <body>
   <header>
     <nav>
-      <a class="brand" href="../">COGNIPILOT</a>
+      <a class="brand" href="../" aria-label="CogniPilot home">
+        <img src="../assets/cognipilot-logo-dark.png" alt="CogniPilot">
+      </a>
       <div class="links">
+        <a href="../#platform">Platform</a>
         <a href="../#toolchain">Toolchain</a>
         <a href="../#safety">Safety</a>
+        <a href="../#foundation">Foundation</a>
+        <a href="../#summit">Events</a>
         <a href="./">Blog</a>
-        <a href="https://github.com/CogniPilot/rumoca" target="_blank" rel="noreferrer">Rumoca</a>
+        <a class="github-link" href="https://github.com/CogniPilot" target="_blank" rel="noreferrer">GitHub &#8599;</a>
       </div>
     </nav>
   </header>
@@ -397,35 +310,6 @@
           <span>12 min read</span>
         </div>
       </div>
-      <aside class="hero-visual" aria-label="Interactive NACA field preview">
-        <div class="field-toolbar">
-          <label class="control">
-            <span><b>AoA</b><output id="aoa-out">8 deg</output></span>
-            <input id="aoa" type="range" min="-20" max="45" value="8" step="1">
-          </label>
-          <label class="control">
-            <span><b>Thickness</b><output id="thick-out">12%</output></span>
-            <input id="thick" type="range" min="6" max="24" value="12" step="1">
-          </label>
-          <label class="control">
-            <span><b>Camber</b><output id="camber-out">2%</output></span>
-            <input id="camber" type="range" min="0" max="8" value="2" step="1">
-          </label>
-          <label class="control">
-            <span><b>Field</b></span>
-            <select id="field">
-              <option value="vorticity">Vorticity</option>
-              <option value="pressure">Pressure</option>
-              <option value="speed">Speed</option>
-            </select>
-          </label>
-        </div>
-        <canvas id="flow-canvas"></canvas>
-        <div class="surface-status">
-          <span id="flow-status">Synthetic field preview</span>
-          <span>Open the embedded guide below for the live Rumoca run</span>
-        </div>
-      </aside>
     </section>
 
     <article class="article">
@@ -548,35 +432,16 @@ const result = await runGpuSimulation(gpu.adapter, prep, {
 
       <p>The strategic direction is straightforward: <strong>PDE today, neural ODEs tomorrow.</strong> Once a compiler can expose clean DAE and Solve forms, it becomes natural to connect physical models to differentiable programming workflows. A future neural ODE workflow should not require throwing away the Modelica model and rebuilding the system in a machine-learning framework. The physical model should remain the source of truth, while JAX, PyTorch, CasADi, CUDA, WGSL, or embedded targets receive representations designed for their job.</p>
 
-      <h2>Try the Pinned Runtime</h2>
-      <p>The panel below loads Rumoca 0.9.9 from the exact npm version named in this post's manifest and a compact NACA airfoil Modelica source bundled with this post. It can compile the model to DAE, lower it for the WebGPU path, and run a short GPU integration in browsers with WebGPU enabled. The full user-guide widget remains the best place to edit the larger example interactively; this blog panel is the archival, version-locked smoke path.</p>
+      <h2>Use the Exact User Guide Widget</h2>
+      <p>The section below mounts the same mdBook live-example runner used by the Rumoca user guide. It loads the exact <code>@cognipilot/rumoca@0.9.9</code> npm package named in this post's manifest, then injects the guide's <code>modelica,interactive,gpu</code> AirfoilFlow block and its paired <code>js,rumoca-viz</code> visualization script. That gives this post the same editor, Simulate button, GPU checkbox, Interactive mode, Show DAE view, field picker, velocity overlays, and parameter tuners as the guide.</p>
     </article>
 
-    <section class="wide" aria-label="Pinned Rumoca NACA runtime">
-      <div class="runtime-panel" data-rumoca-live data-manifest="rumoca-naca-manifest.json">
-        <div class="runtime-bar">
-          <span id="rumoca-runtime-status">Pinned runtime not loaded yet</span>
-          <a href="https://cognipilot.github.io/rumoca/user-guide/language/arrays-pde.html#_2-d-navier-stokes-flow-over-a-naca-2412-airfoil" target="_blank" rel="noreferrer">Open latest user-guide widget</a>
-        </div>
-        <div class="runtime-body">
-          <div class="runtime-copy">
-            <p>This is intentionally smaller than the guide's full NACA grid so it can act as a quick browser smoke test. It still exercises the same important path: Modelica arrays, stencil-like equations, DAE lowering, Solve preparation, and optional WebGPU execution.</p>
-            <div class="runtime-grid">
-              <div class="runtime-kv"><b>Runtime</b><span id="rumoca-pin">loading</span></div>
-              <div class="runtime-kv"><b>Model</b><span id="rumoca-model">loading</span></div>
-              <div class="runtime-kv"><b>Source</b><span>assets/rumoca-naca-airfoil.mo</span></div>
-              <div class="runtime-kv"><b>Wrapper</b><span>blog-rumoca-live-v1</span></div>
-            </div>
-            <div class="runtime-actions">
-              <button class="runtime-button" id="rumoca-compile" type="button">Compile DAE</button>
-              <button class="runtime-button" id="rumoca-gpu-prep" type="button">Prepare WebGPU</button>
-              <button class="runtime-button" id="rumoca-gpu-run" type="button">Run Short GPU Sim</button>
-            </div>
-            <div class="runtime-result" id="rumoca-result">Use the buttons to exercise the pinned runtime.</div>
-          </div>
-          <div class="runtime-log" id="rumoca-log" aria-live="polite"></div>
-        </div>
+    <section class="wide guide-widget-section" aria-label="Rumoca user-guide NACA widget">
+      <div class="guide-widget-head">
+        <div><b>Exact guide widget</b><br><span data-rumoca-guide-log>Loading AirfoilFlow and visualization source...</span></div>
+        <a href="https://cognipilot.github.io/rumoca/user-guide/language/arrays-pde.html#_2-d-navier-stokes-flow-over-a-naca-2412-airfoil" target="_blank" rel="noreferrer">Open in Rumoca user guide</a>
       </div>
+      <div class="guide-widget-shell" data-rumoca-guide-widget data-manifest="rumoca-naca-manifest.json"></div>
     </section>
 
     <article class="article">
@@ -607,159 +472,6 @@ const result = await runGpuSimulation(gpu.adapter, prep, {
     <a href="./">Blog</a> · <a href="../">CogniPilot</a> · Apache-2.0
   </footer>
 
-  <script type="module" src="blog-rumoca-live-v1.js"></script>
-  <script>
-    (function () {
-      const canvas = document.getElementById('flow-canvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      const els = {
-        aoa: document.getElementById('aoa'),
-        thick: document.getElementById('thick'),
-        camber: document.getElementById('camber'),
-        field: document.getElementById('field'),
-        aoaOut: document.getElementById('aoa-out'),
-        thickOut: document.getElementById('thick-out'),
-        camberOut: document.getElementById('camber-out'),
-        status: document.getElementById('flow-status')
-      };
-      const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
-      function resize() {
-        const rect = canvas.getBoundingClientRect();
-        const dpr = Math.min(2, window.devicePixelRatio || 1);
-        canvas.width = Math.max(1, Math.floor(rect.width * dpr));
-        canvas.height = Math.max(1, Math.floor(rect.height * dpr));
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      }
-      function camberLine(x, m, p) {
-        if (m <= 0) return 0;
-        return x < p
-          ? m / (p * p) * (2 * p * x - x * x)
-          : m / ((1 - p) * (1 - p)) * ((1 - 2 * p) + 2 * p * x - x * x);
-      }
-      function thickness(x, t) {
-        const s = Math.max(x, 0);
-        return 5 * t * (0.2969 * Math.sqrt(s) - 0.1260 * x - 0.3516 * x * x + 0.2843 * x * x * x - 0.1036 * x * x * x * x);
-      }
-      function mask(sc, nc, m, t) {
-        const p = 0.4;
-        const yc = camberLine(sc, m, p);
-        const yt = Math.sqrt(thickness(sc, t) ** 2 + 0.0025);
-        const epsn = 0.035;
-        const epss = 0.04;
-        const body = 0.5 * (1 - Math.tanh((Math.abs(nc - yc) - yt) / epsn));
-        const nose = 0.5 * (1 + Math.tanh(sc / epss));
-        const tail = 0.5 * (1 + Math.tanh((1 - sc) / epss));
-        return body * nose * tail;
-      }
-      function valueAt(x, y, aoa, m, t, mode, time) {
-        const ca = Math.cos(aoa), sa = Math.sin(aoa);
-        const sc = x * ca - y * sa;
-        const nc = x * sa + y * ca;
-        const sig = mask(sc, nc, m, t);
-        const upper = Math.exp(-((nc - 0.10 - 0.42 * m) ** 2) / 0.012) * Math.exp(-((sc - 0.36) ** 2) / 0.18);
-        const wake = Math.exp(-Math.max(0, sc - 1.0) * 1.6) * Math.exp(-(nc ** 2) / 0.055);
-        const stall = clamp((Math.abs(aoa) - 0.22) * 2.8, 0, 1);
-        const wave = Math.sin(18 * sc - 9 * nc + time * 0.0018) * wake * stall;
-        const speed = 1 + 0.95 * upper * Math.max(0, aoa + 0.2) + 0.35 * wave - 0.85 * sig;
-        const pressure = 0.35 - 0.9 * upper * Math.max(0, aoa + 0.15) + 0.45 * sig + 0.2 * wave;
-        const vort = 1.5 * wave + 0.7 * Math.sin(24 * nc + time * 0.002) * wake - 0.45 * upper * aoa;
-        if (mode === 'pressure') return pressure;
-        if (mode === 'speed') return speed;
-        return vort;
-      }
-      function color(x, mode) {
-        let r, g, b;
-        if (mode === 'pressure') {
-          const v = clamp((x + 0.8) / 1.7, 0, 1);
-          r = 22 + 220 * v; g = 72 + 100 * (1 - Math.abs(v - .5) * 2); b = 190 * (1 - v) + 38;
-        } else if (mode === 'speed') {
-          const v = clamp(x / 2.0, 0, 1);
-          r = 16 + 218 * v; g = 74 + 166 * v; b = 115 + 70 * (1 - v);
-        } else {
-          const v = clamp((x + 1.2) / 2.4, 0, 1);
-          r = 40 + 210 * v; g = 80 + 140 * (1 - Math.abs(v - .5) * 2); b = 215 * (1 - v) + 40;
-        }
-        return `rgb(${r|0},${g|0},${b|0})`;
-      }
-      function drawAirfoil(w, h, aoa, m, t) {
-        const cx = w * .31, cy = h * .52, chord = w * .44;
-        const ca = Math.cos(-aoa), sa = Math.sin(-aoa);
-        const pxy = (x, y) => {
-          const X = (x - .03) * chord;
-          const Y = -y * chord;
-          return [cx + X * ca - Y * sa, cy + X * sa + Y * ca];
-        };
-        ctx.beginPath();
-        for (let k = 0; k <= 80; k++) {
-          const x = k / 80;
-          const y = camberLine(x, m, 0.4) + thickness(x, t);
-          const p = pxy(x, y);
-          if (k === 0) ctx.moveTo(p[0], p[1]); else ctx.lineTo(p[0], p[1]);
-        }
-        for (let k = 80; k >= 0; k--) {
-          const x = k / 80;
-          const y = camberLine(x, m, 0.4) - thickness(x, t);
-          const p = pxy(x, y);
-          ctx.lineTo(p[0], p[1]);
-        }
-        ctx.closePath();
-        ctx.fillStyle = '#03070c';
-        ctx.fill();
-        ctx.strokeStyle = '#f3f7fb';
-        ctx.lineWidth = 1.4;
-        ctx.stroke();
-      }
-      function draw(time) {
-        const w = canvas.clientWidth || 620;
-        const h = canvas.clientHeight || 360;
-        const aoaDeg = Number(els.aoa.value);
-        const aoa = aoaDeg * Math.PI / 180;
-        const thick = Number(els.thick.value) / 100;
-        const camber = Number(els.camber.value) / 100;
-        const mode = els.field.value;
-        els.aoaOut.textContent = `${aoaDeg} deg`;
-        els.thickOut.textContent = `${Math.round(thick * 100)}%`;
-        els.camberOut.textContent = `${Math.round(camber * 100)}%`;
-        els.status.textContent = `${mode} preview · NACA ${Math.round(camber * 100)}4${String(Math.round(thick * 100)).padStart(2, '0')}`;
-
-        const nx = 86, ny = 42;
-        const cw = w / nx, ch = h / ny;
-        for (let i = 0; i < nx; i++) {
-          for (let j = 0; j < ny; j++) {
-            const x = i / nx * 2.8 - 0.45;
-            const y = (0.5 - j / ny) * 1.35;
-            const v = valueAt(x, y, aoa, camber, thick, mode, time);
-            ctx.fillStyle = color(v, mode);
-            ctx.fillRect(i * cw, j * ch, cw + 1, ch + 1);
-          }
-        }
-        ctx.globalAlpha = 0.22;
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 1;
-        for (let k = 0; k < 13; k++) {
-          const y = h * (0.16 + k * 0.056);
-          ctx.beginPath();
-          for (let x = 0; x <= w; x += 12) {
-            const yy = y + Math.sin(x * .024 + k * .7 + time * .0016) * 6;
-            if (x === 0) ctx.moveTo(x, yy); else ctx.lineTo(x, yy);
-          }
-          ctx.stroke();
-        }
-        ctx.globalAlpha = 1;
-        drawAirfoil(w, h, aoa, camber, thick);
-        requestAnimationFrame(draw);
-      }
-      resize();
-      window.addEventListener('resize', resize);
-      ['input', 'change'].forEach((eventName) => {
-        els.aoa.addEventListener(eventName, () => {});
-        els.thick.addEventListener(eventName, () => {});
-        els.camber.addEventListener(eventName, () => {});
-        els.field.addEventListener(eventName, () => {});
-      });
-      requestAnimationFrame(draw);
-    })();
-  </script>
+  <script type="module" src="rumoca-guide-widget.js"></script>
 </body>
 </html>

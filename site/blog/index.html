@@ -43,27 +43,37 @@
       backdrop-filter: blur(14px);
     }
     nav {
-      max-width: 1120px;
+      width: 100%;
+      min-height: 92px;
       margin: 0 auto;
-      padding: 14px 24px;
+      padding: 20px 44px;
       display: flex;
       align-items: center;
-      gap: 26px;
+      gap: 28px;
     }
     .brand {
-      font-family: "IBM Plex Mono", ui-monospace, monospace;
-      font-weight: 700;
-      letter-spacing: .16em;
-      color: var(--text);
+      display: flex;
+      align-items: center;
     }
+    .brand img { height: 50px; width: auto; display: block; }
     .links {
       margin-left: auto;
       display: flex;
-      gap: 22px;
+      align-items: center;
+      gap: 42px;
       color: var(--muted);
-      font: 13px "IBM Plex Mono", ui-monospace, monospace;
+      font: 16px "IBM Plex Mono", ui-monospace, monospace;
+      letter-spacing: .08em;
     }
     .links a:hover { color: var(--accent); }
+    .github-link {
+      padding: 16px 24px;
+      border-radius: 12px;
+      background: var(--accent);
+      color: #04120f;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
     main {
       max-width: 1120px;
       margin: 0 auto;
@@ -161,8 +171,10 @@
       text-align: center;
     }
     @media (max-width: 820px) {
-      nav { flex-wrap: wrap; }
-      .links { width: 100%; margin-left: 0; justify-content: space-between; }
+      nav { min-height: auto; flex-wrap: wrap; padding: 16px 20px; }
+      .brand img { height: 38px; }
+      .links { width: 100%; margin-left: 0; justify-content: flex-start; gap: 16px; overflow-x: auto; font-size: 12px; }
+      .github-link { padding: 10px 14px; border-radius: 8px; }
       .post { grid-template-columns: 1fr; }
       .visual { min-height: 260px; border-left: 0; border-top: 1px solid var(--line); }
       .post-copy { padding: 26px; }
@@ -172,12 +184,17 @@
 <body>
   <header>
     <nav>
-      <a class="brand" href="../">COGNIPILOT</a>
+      <a class="brand" href="../" aria-label="CogniPilot home">
+        <img src="../assets/cognipilot-logo-dark.png" alt="CogniPilot">
+      </a>
       <div class="links">
         <a href="../#platform">Platform</a>
         <a href="../#toolchain">Toolchain</a>
         <a href="../#safety">Safety</a>
+        <a href="../#foundation">Foundation</a>
+        <a href="../#summit">Events</a>
         <a href="./">Blog</a>
+        <a class="github-link" href="https://github.com/CogniPilot" target="_blank" rel="noreferrer">GitHub &#8599;</a>
       </div>
     </nav>
   </header>

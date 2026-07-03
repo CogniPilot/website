@@ -1,6 +1,6 @@
 {
-  "schema": "blog-rumoca-live-v1",
-  "title": "Rumoca NACA Airfoil PDE Runtime",
+  "schema": "rumoca-guide-widget-v1",
+  "title": "Rumoca NACA Airfoil PDE User Guide Widget",
   "packageName": "@cognipilot/rumoca",
   "rumocaVersion": "0.9.9",
   "packageIntegrity": "sha512-7i4VjsYjvTVc0LlBzKU8pnk8JZutj7ctiCnHGzuIXyaZYNo8sbssNiINYIs9wVUCH6hXVHTN0g2p49GFqCU8fQ==",
@@ -9,10 +9,13 @@
     "https://cdn.jsdelivr.net/npm/@cognipilot/rumoca@0.9.9/",
     "https://unpkg.com/@cognipilot/rumoca@0.9.9/"
   ],
-  "modelName": "AirfoilFlowBlog",
-  "modelSource": "assets/rumoca-naca-airfoil.mo",
+  "guideRunner": "rumoca-live.js",
+  "guideStyles": "rumoca-live.css",
+  "modelName": "AirfoilFlow",
+  "modelSource": "assets/airfoil-flow.mo",
+  "vizSource": "assets/airfoil-flow-viz.js",
   "notes": [
-    "Pinned exact npm package version loaded from npm-backed CDN URLs.",
-    "This blog widget performs a compile/DAE check and optional WebGPU Solve preparation/run without depending on the moving latest tag."
+    "The blog mounts the same mdBook live-example runner used by the Rumoca user guide.",
+    "The Rumoca runtime remains an exact npm package version loaded from npm-backed CDN URLs, never latest."
   ]
 }

@@ -27,7 +27,9 @@ jobs:
           node-version: 22
 
       - name: Check JavaScript syntax
-        run: node --check site/blog/blog-rumoca-live-v1.js
+        run: |
+          node --check site/blog/rumoca-guide-widget.js
+          node --check site/blog/rumoca-live.js
 
       - name: Validate static site
         run: node scripts/validate-site.mjs

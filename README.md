@@ -42,11 +42,15 @@ Interactive blog examples should pin exact npm package versions in a per-post
 manifest rather than using `latest`. This keeps old posts reproducible without
 checking old runtime builds into the repository. Include the npm tarball
 integrity/shasum in the manifest when the example is meant to be archival.
+When a post mirrors a Rumoca user-guide example, keep the widget runner and
+example source aligned with the guide instead of rebuilding a blog-specific
+approximation.
 
 Run the same validation that gates GitHub Pages locally with:
 
 ```bash
-node --check site/blog/blog-rumoca-live-v1.js
+node --check site/blog/rumoca-guide-widget.js
+node --check site/blog/rumoca-live.js
 node scripts/validate-site.mjs
 ```
 
