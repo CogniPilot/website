@@ -87,17 +87,19 @@ if (post.includes('Synthetic field preview') || post.includes('blog-rumoca-live-
 }
 
 const home = read('site/index.html');
-if (home.includes('__bundler/manifest') || home.includes('installHomepageAdditions')) {
-  fail('Published homepage should be a static Mission page, not the old bundled shell.');
+const bootScript = home.match(/<script>([\s\S]*?)<\/script>/i);
+if (!bootScript) fail('Published homepage is missing its boot script.');
+new Function(bootScript[1]);
+if (!home.includes('installHomepageAdditions')) fail('Published homepage is missing the post-render navigation hook.');
+if (!home.includes('Three principles') || !home.includes('REACHABILITY ANALYSIS') || !home.includes('PROVEN FLOW TUBE')) {
+  fail('Published homepage is missing rich Mission page content.');
 }
-if (!home.includes('assets/cognipilot-logo-dark.png')) {
-  fail('Mission page header must use the CogniPilot logo asset.');
+if (!home.includes('width:min(100%,1320px)')) fail('Mission page header normalization is missing.');
+if (!home.includes("membership.href = 'membership/'") || !home.includes("events.href = 'events/'")) {
+  fail('Mission page must link to the top-level Membership and Events pages.');
 }
-if (!home.includes('href="./" aria-current="page">Mission')) {
-  fail('Mission page must mark Mission as the active navigation item.');
-}
-if (!home.includes('membership/') || !home.includes('events/') || !home.includes('blog/')) {
-  fail('Mission page is missing one or more top-level navigation links.');
+if (!home.includes("document.getElementById('summit')") || !home.includes('summit.remove()')) {
+  fail('Mission page should remove the old embedded summit/calendar section; Events owns the calendar.');
 }
 if (!home.includes('rumoca-naca-pde.html')) fail('Published homepage is missing the blog post link.');
 
