@@ -189,7 +189,14 @@ document.addEventListener('DOMContentLoaded', async function() {
           });
           const events = navLinks.find(function(a) { return a.textContent.trim() === 'Events'; });
           if (events) events.href = 'events/';
-          if (!navLinks.some(function(a) { return a.textContent.trim() === 'Membership'; })) {
+          if (!Array.from(navGroup.querySelectorAll('a')).some(function(a) { return a.textContent.trim() === 'Overview'; })) {
+            const overview = document.createElement('a');
+            overview.href = './';
+            overview.textContent = 'Overview';
+            overview.setAttribute('style', 'transition:color .18s;');
+            navGroup.insertBefore(overview, navGroup.querySelector('a') || null);
+          }
+          if (!Array.from(navGroup.querySelectorAll('a')).some(function(a) { return a.textContent.trim() === 'Membership'; })) {
             const membership = document.createElement('a');
             membership.href = '#foundation-support';
             membership.textContent = 'Membership';

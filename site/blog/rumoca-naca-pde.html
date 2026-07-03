@@ -58,10 +58,10 @@
       backdrop-filter: blur(14px);
     }
     nav {
-      width: 100%;
-      min-height: 92px;
+      width: min(100%, 1320px);
+      min-height: 66px;
       margin: 0 auto;
-      padding: 20px 44px;
+      padding: 10px 24px;
       display: flex;
       align-items: center;
       gap: 28px;
@@ -70,21 +70,21 @@
       display: flex;
       align-items: center;
     }
-    .brand img { height: 50px; width: auto; display: block; }
+    .brand img { height: 34px; width: auto; display: block; }
     .links {
       margin-left: auto;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 42px;
+      gap: 34px;
       color: var(--muted);
-      font: 16px "IBM Plex Mono", ui-monospace, monospace;
+      font: 14px "IBM Plex Mono", ui-monospace, monospace;
       letter-spacing: .08em;
     }
     .links a:hover { color: var(--accent); }
     .github-link {
-      padding: 16px 24px;
-      border-radius: 12px;
+      padding: 13px 20px;
+      border-radius: 10px;
       background: var(--accent);
       color: #04120f;
       font-weight: 700;
@@ -303,8 +303,8 @@
       .refs { grid-template-columns: 1fr; }
     }
     @media (max-width: 620px) {
-      nav { min-height: auto; flex-wrap: wrap; padding: 16px 20px; }
-      .brand img { height: 38px; }
+      nav { min-height: auto; flex-wrap: wrap; padding: 12px 20px; }
+      .brand img { height: 32px; }
       .links { width: 100%; margin-left: 0; justify-content: flex-start; gap: 16px; overflow-x: auto; font-size: 12px; }
       .github-link { padding: 10px 14px; border-radius: 8px; }
       .pipeline { grid-template-columns: 1fr; }
@@ -320,6 +320,7 @@
         <img src="../assets/cognipilot-logo-dark.png" alt="CogniPilot">
       </a>
       <div class="links">
+        <a href="../">Overview</a>
         <a href="../#foundation-support">Membership</a>
         <a href="../events/">Events</a>
         <a href="./">Blog</a>
