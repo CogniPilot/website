@@ -4,21 +4,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <title>CogniPilot Blog</title>
-  <meta name="description" content="Technical notes from the CogniPilot Foundation on safe autonomy, Rumoca, verification, and compiler-driven flight software.">
+  <title>CogniPilot Events</title>
+  <meta name="description" content="CogniPilot Foundation events, meetings, summits, and community sessions.">
   <meta name="theme-color" content="#06090f">
   <style>
     :root {
       --bg: #06090f;
       --panel: #0c1320;
-      --panel2: #101a28;
       --text: #e6edf4;
       --muted: #95a3b5;
       --dim: #627084;
       --line: rgba(255,255,255,.11);
       --accent: #35e0d8;
-      --amber: #f2c33a;
-      --red: #ef5a5f;
     }
     * { box-sizing: border-box; }
     body {
@@ -51,10 +48,7 @@
       align-items: center;
       gap: 28px;
     }
-    .brand {
-      display: flex;
-      align-items: center;
-    }
+    .brand { display: flex; align-items: center; }
     .brand img { height: 50px; width: auto; display: block; }
     .links {
       margin-left: auto;
@@ -65,7 +59,7 @@
       font: 16px "IBM Plex Mono", ui-monospace, monospace;
       letter-spacing: .08em;
     }
-    .links a:hover { color: var(--accent); }
+    .links a:hover, .links a[aria-current="page"] { color: var(--accent); }
     .github-link {
       padding: 16px 24px;
       border-radius: 12px;
@@ -75,9 +69,9 @@
       letter-spacing: .02em;
     }
     main {
-      max-width: 1240px;
+      max-width: 1120px;
       margin: 0 auto;
-      padding: 60px 32px 96px;
+      padding: 78px 24px 96px;
     }
     .eyebrow {
       color: var(--accent);
@@ -86,76 +80,49 @@
       text-transform: uppercase;
     }
     h1 {
-      margin: 10px 0 0;
+      max-width: 860px;
+      margin: 18px 0;
       font-family: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
-      font-size: clamp(26px, 3vw, 38px);
+      font-size: clamp(42px, 7vw, 78px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+    .lead {
+      max-width: 780px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 19px;
+    }
+    .event-panel {
+      margin-top: 56px;
+      padding: 34px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(12,19,32,.82);
+    }
+    .event-panel h2 {
+      margin: 0 0 12px;
+      font-family: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
+      font-size: clamp(26px, 3.5vw, 42px);
       line-height: 1.08;
       letter-spacing: 0;
     }
-    .post-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 18px;
-      margin-top: 24px;
-    }
-    .post {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 0;
-      border: 1px solid var(--line);
-      background: rgba(12,19,32,.82);
-      border-radius: 16px;
-      overflow: hidden;
-    }
-    .post-copy { padding: 34px; }
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 18px;
-      color: var(--dim);
-      font: 12px "IBM Plex Mono", ui-monospace, monospace;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-    h2 {
-      margin: 0 0 14px;
-      font-family: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
-      font-size: 28px;
-      line-height: 1.12;
-      letter-spacing: 0;
-    }
-    .post p {
+    .event-panel p {
       margin: 0;
+      max-width: 760px;
       color: var(--muted);
       font-size: 16.5px;
     }
     .button {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
       margin-top: 26px;
       padding: 12px 18px;
       border-radius: 8px;
       background: var(--accent);
       color: #04120f;
       font: 700 13px "IBM Plex Mono", ui-monospace, monospace;
-    }
-    .visual {
-      border-top: 1px solid var(--line);
-      background: #07101a;
-      padding: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .visual img {
-      width: 100%;
-      max-width: 760px;
-      height: auto;
-      display: block;
-      border: 1px solid var(--line);
-      border-radius: 6px;
     }
     footer {
       border-top: 1px solid var(--line);
@@ -169,8 +136,7 @@
       .brand img { height: 38px; }
       .links { width: 100%; margin-left: 0; justify-content: flex-start; gap: 16px; overflow-x: auto; font-size: 12px; }
       .github-link { padding: 10px 14px; border-radius: 8px; }
-      .visual { padding: 14px; }
-      .post-copy { padding: 26px; }
+      .event-panel { padding: 26px; }
     }
   </style>
 </head>
@@ -182,32 +148,21 @@
       </a>
       <div class="links">
         <a href="../#foundation-support">Membership</a>
-        <a href="../events/">Events</a>
-        <a href="./">Blog</a>
+        <a href="./" aria-current="page">Events</a>
+        <a href="../blog/">Blog</a>
         <a class="github-link" href="https://github.com/CogniPilot" target="_blank" rel="noreferrer">GitHub &#8599;</a>
       </div>
     </nav>
   </header>
   <main>
-    <div class="eyebrow">06 / Blog</div>
-    <h1>Notes from the compiler boundary</h1>
+    <div class="eyebrow">Foundation Events</div>
+    <h1>Events for open, safe autonomy.</h1>
+    <p class="lead">CogniPilot Foundation events, working sessions, and community meetings will live here as separate pages instead of being buried in the homepage flow.</p>
 
-    <section class="post-grid" aria-label="Blog posts">
-      <article class="post">
-        <div class="post-copy">
-          <div class="meta">
-            <span>Rumoca</span>
-            <span>July 3, 2026</span>
-            <span>12 min</span>
-          </div>
-          <h2>Cross-Domain Optimization with a Differentiable NACA Airfoil Model</h2>
-          <p>Walk through the NACA 2412 Navier-Stokes demo, the compiler pipeline behind it, and why preserving array structure all the way to WebGPU matters.</p>
-          <a class="button" href="rumoca-naca-pde.html">Read post</a>
-        </div>
-        <div class="visual">
-          <img src="assets/rumoca_naca_blog_poster.jpg" alt="Rumoca NACA airfoil PDE demo preview" loading="lazy">
-        </div>
-      </article>
+    <section class="event-panel" aria-labelledby="upcoming-events">
+      <h2 id="upcoming-events">Upcoming Events</h2>
+      <p>No public events are posted yet. Foundation meetings, summits, workshops, and community sessions will be listed here when dates are ready.</p>
+      <a class="button" href="mailto:membership@cognipilot.com?subject=CogniPilot%20Foundation%20events">Contact the foundation</a>
     </section>
   </main>
   <footer>

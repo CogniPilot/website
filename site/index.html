@@ -178,16 +178,32 @@ document.addEventListener('DOMContentLoaded', async function() {
 	        setTimeout(function() { installHomepageAdditions(attempt + 1); }, 150);
 	        return;
 	      }
-      if (header && !Array.from(header.querySelectorAll('a')).some(function(a) { return a.textContent.trim() === 'Blog'; })) {
+      if (header) {
         const navGroup = Array.from(header.querySelectorAll('div')).find(function(div) {
           return div.textContent.indexOf('Platform') !== -1 && div.textContent.indexOf('Events') !== -1;
         });
         if (navGroup) {
-          const blog = document.createElement('a');
-          blog.href = 'blog/';
-          blog.textContent = 'Blog';
-          blog.setAttribute('style', 'transition:color .18s;');
-          navGroup.appendChild(blog);
+          const navLinks = Array.from(navGroup.querySelectorAll('a'));
+          navLinks.forEach(function(a) {
+            if (['Platform', 'Toolchain', 'Safety', 'Foundation'].includes(a.textContent.trim())) a.remove();
+          });
+          const events = navLinks.find(function(a) { return a.textContent.trim() === 'Events'; });
+          if (events) events.href = 'events/';
+          if (!navLinks.some(function(a) { return a.textContent.trim() === 'Membership'; })) {
+            const membership = document.createElement('a');
+            membership.href = '#foundation-support';
+            membership.textContent = 'Membership';
+            membership.setAttribute('style', 'transition:color .18s;');
+            navGroup.insertBefore(membership, events || null);
+          }
+          if (!Array.from(navGroup.querySelectorAll('a')).some(function(a) { return a.textContent.trim() === 'Blog'; })) {
+            const blog = document.createElement('a');
+            blog.href = 'blog/';
+            blog.textContent = 'Blog';
+            blog.setAttribute('style', 'transition:color .18s;');
+            const github = Array.from(navGroup.querySelectorAll('a')).find(function(a) { return a.textContent.trim().indexOf('GitHub') === 0; });
+            navGroup.insertBefore(blog, github || null);
+          }
         }
       }
       if (footer && !document.getElementById('blog')) {
@@ -202,17 +218,15 @@ document.addEventListener('DOMContentLoaded', async function() {
             '</div>' +
             '<a href="blog/" style="font-family:&quot;IBM Plex Mono&quot;,monospace; font-size:13px; color:var(--accent);">All posts &#8599;</a>' +
           '</div>' +
-          '<a href="blog/rumoca-naca-pde.html" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:0; border:1px solid var(--line); border-radius:16px; overflow:hidden; background:var(--panel); transition:border-color .2s,transform .2s;">' +
+	          '<a href="blog/rumoca-naca-pde.html" style="display:block; border:1px solid var(--line); border-radius:16px; overflow:hidden; background:var(--panel); transition:border-color .2s,transform .2s;">' +
             '<div style="padding:34px 30px;">' +
               '<div style="font-family:&quot;IBM Plex Mono&quot;,monospace; font-size:12px; letter-spacing:.14em; color:var(--dim);">RUMOCA · PDE · WEBGPU</div>' +
               '<h3 style="font-family:&quot;Space Grotesk&quot;,sans-serif; font-size:28px; line-height:1.12; font-weight:600; margin:12px 0 10px; color:var(--text);">Cross-Domain Optimization with a Differentiable NACA Airfoil Model</h3>' +
               '<p style="margin:0; max-width:760px; font-size:15.5px; line-height:1.62; color:var(--muted);">A detailed walkthrough of the NACA 2412 Navier-Stokes demo, Rumoca&apos;s AST-to-Flat-to-DAE-to-Solve pipeline, and why preserving array structure to WebGPU matters.</p>' +
             '</div>' +
-            '<div style="min-height:220px; border-left:1px solid var(--line); background:linear-gradient(135deg, rgba(53,224,216,.18), rgba(242,195,58,.08) 46%, rgba(239,90,95,.10)), #07101a; position:relative; overflow:hidden;">' +
-              '<div style="position:absolute; inset:24px; border:1px solid rgba(255,255,255,.16); border-radius:50%; transform:rotate(-8deg);"></div>' +
-              '<div style="position:absolute; left:18%; right:14%; top:50%; height:28px; margin-top:-14px; background:#03070c; border:1px solid rgba(230,237,244,.9); border-radius:50% 12% 12% 50%; transform:rotate(-10deg);"></div>' +
-              '<div style="position:absolute; left:0; right:0; top:28%; height:1px; background:rgba(53,224,216,.65); box-shadow:0 42px 0 rgba(53,224,216,.38), 0 84px 0 rgba(242,195,58,.36);"></div>' +
-            '</div>' +
+	            '<div style="border-top:1px solid var(--line); background:#07101a; padding:22px; display:flex; align-items:center; justify-content:center;">' +
+	              '<img src="blog/assets/rumoca_naca_blog_poster.jpg" alt="" loading="lazy" style="width:100%; max-width:760px; height:auto; display:block; border:1px solid rgba(255,255,255,.12); border-radius:6px;">' +
+	            '</div>' +
           '</a>';
 	        footer.parentNode.insertBefore(section, footer);
 	      }
@@ -221,18 +235,24 @@ document.addEventListener('DOMContentLoaded', async function() {
 	        support.id = 'foundation-support';
 	        support.setAttribute('style', 'max-width:1240px; margin:0 auto; padding:24px 32px 72px;');
 	        support.innerHTML =
-	          '<div style="border-top:1px solid var(--line); padding-top:34px; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr)); gap:32px; align-items:start;">' +
+	          '<div style="border-top:1px solid var(--line); padding-top:34px; display:grid; gap:32px; align-items:start;">' +
 	            '<div>' +
 	              '<span style="font-family:&quot;IBM Plex Mono&quot;,monospace; font-size:12px; letter-spacing:.2em; color:var(--accent);">07 / FOUNDATION</span>' +
 	              '<h2 style="font-family:&quot;Space Grotesk&quot;,sans-serif; font-weight:600; font-size:clamp(24px,2.5vw,34px); letter-spacing:-.01em; margin:10px 0 12px; color:var(--text);">CogniPilot Foundation membership</h2>' +
-	              '<p style="margin:0; max-width:680px; font-size:15.5px; line-height:1.62; color:var(--muted);">The foundation brings contributors, sponsors, and research partners together around open, safety-oriented autonomy infrastructure. Membership is available at Platinum, Gold, Silver, and Copper levels, and members have a say in the direction of the foundation.</p>' +
+	              '<p style="margin:0; max-width:920px; font-size:15.5px; line-height:1.62; color:var(--muted);">The foundation brings contributors, sponsors, and research partners together around open, safety-oriented autonomy infrastructure. Membership is available at Platinum, Gold, Silver, and Copper levels. NXP and Purdue University are founding Platinum members, and members have a say in the direction of the foundation.</p>' +
 	              '<a href="mailto:membership@cognipilot.com?subject=CogniPilot%20Foundation%20membership%20application" style="display:inline-flex; align-items:center; justify-content:center; max-width:100%; box-sizing:border-box; min-height:46px; margin-top:22px; padding:12px 20px; border-radius:8px; background:var(--accent); color:#04120f; font-family:&quot;IBM Plex Mono&quot;,monospace; font-weight:600; font-size:13px; line-height:1.25; text-align:center; white-space:normal;">Apply for CogniPilot Foundation membership</a>' +
 	            '</div>' +
 	            '<div style="display:grid; gap:22px;">' +
 	              '<div>' +
-	                '<div style="font-family:&quot;IBM Plex Mono&quot;,monospace; font-size:12px; letter-spacing:.14em; color:var(--dim); text-transform:uppercase;">Founding Members</div>' +
-	                '<div style="font-family:&quot;Space Grotesk&quot;,sans-serif; font-size:30px; font-weight:600; color:var(--text); margin-top:8px;">NXP</div>' +
-	                '<div style="font-family:&quot;Space Grotesk&quot;,sans-serif; font-size:24px; font-weight:500; color:var(--text); margin-top:6px;">Purdue University</div>' +
+	                '<div style="font-family:&quot;IBM Plex Mono&quot;,monospace; font-size:12px; letter-spacing:.14em; color:var(--dim); text-transform:uppercase;">Founding Platinum Members</div>' +
+	                '<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-top:12px;">' +
+	                  '<div style="min-height:96px; border:1px solid rgba(255,255,255,.14); border-radius:8px; background:rgba(255,255,255,.96); display:flex; align-items:center; justify-content:center; padding:20px;">' +
+	                    '<img src="assets/nxp-logo.svg" alt="NXP" loading="lazy" style="width:150px; max-width:100%; height:auto; display:block;">' +
+	                  '</div>' +
+	                  '<div style="min-height:96px; border:1px solid rgba(255,255,255,.14); border-radius:8px; background:#fff; display:flex; align-items:center; justify-content:center; padding:14px 18px;">' +
+	                    '<img src="assets/purdue-university-logo.jpg" alt="Purdue University" loading="lazy" style="width:100%; max-width:280px; height:auto; display:block;">' +
+	                  '</div>' +
+	                '</div>' +
 	              '</div>' +
 	              '<div>' +
 	                '<div style="font-family:&quot;IBM Plex Mono&quot;,monospace; font-size:12px; letter-spacing:.14em; color:var(--dim); text-transform:uppercase;">Membership Levels</div>' +
@@ -241,6 +261,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 	            '</div>' +
 	          '</div>';
 	        footer.parentNode.insertBefore(support, footer);
+	        if (window.location.hash === '#foundation-support') support.scrollIntoView();
 	      }
 	    })();
   } catch (err) {
