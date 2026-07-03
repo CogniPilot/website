@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Array-native PDEs in the browser: the Rumoca NACA airfoil example</title>
+  <meta name="description" content="A detailed walk-through of Rumoca's NACA 2412 airfoil PDE example, the compiler pipeline behind it, and why array-native WebGPU execution matters.">
+  <meta name="theme-color" content="#06090f">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="CogniPilot">
+  <meta property="og:title" content="Array-native PDEs in the browser: the Rumoca NACA airfoil example">
+  <meta property="og:description" content="PDE today, neural ODEs tomorrow: how Rumoca keeps Modelica arrays intact from source to WebGPU kernels.">
+  <style>
+    :root {
+      --bg: #06090f;
+      --panel: #0c1320;
+      --panel2: #101a28;
+      --panel3: #141d2b;
+      --text: #e6edf4;
+      --muted: #98a6b8;
+      --dim: #657487;
+      --line: rgba(255,255,255,.11);
+      --line2: rgba(255,255,255,.06);
+      --accent: #35e0d8;
+      --amber: #f2c33a;
+      --red: #ef5a5f;
+      --green: #46c877;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        linear-gradient(180deg, rgba(53,224,216,.055), rgba(6,9,15,0) 34rem),
+        linear-gradient(90deg, rgba(255,255,255,.032) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255,255,255,.022) 1px, transparent 1px),
+        var(--bg);
+      background-size: auto, 44px 44px, 44px 44px, auto;
+      color: var(--text);
+      font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.62;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-bottom: 1px solid var(--line);
+      background: rgba(6,9,15,.84);
+      backdrop-filter: blur(14px);
+    }
+    nav {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 26px;
+    }
+    .brand {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-weight: 700;
+      letter-spacing: .16em;
+      color: var(--text);
+    }
+    .links {
+      margin-left: auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 22px;
+      color: var(--muted);
+      font: 13px "IBM Plex Mono", ui-monospace, monospace;
+    }
+    .links a:hover { color: var(--accent); }
+    main { padding-bottom: 88px; }
+    .hero {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 76px 24px 34px;
+      display: grid;
+      grid-template-columns: minmax(0, .92fr) minmax(360px, .68fr);
+      gap: 42px;
+      align-items: center;
+    }
+    .eyebrow {
+      color: var(--accent);
+      font: 12px "IBM Plex Mono", ui-monospace, monospace;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 18px 0 18px;
+      font-family: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
+      font-size: clamp(38px, 6.6vw, 76px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+    .lead {
+      max-width: 760px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 19px;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+      color: var(--dim);
+      font: 12px "IBM Plex Mono", ui-monospace, monospace;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .hero-visual {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #07101a;
+      overflow: hidden;
+    }
+    .field-toolbar {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+    }
+    .control {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font: 12px "IBM Plex Mono", ui-monospace, monospace;
+    }
+    .control span { display: flex; justify-content: space-between; gap: 10px; }
+    input[type="range"], select {
+      width: 100%;
+      accent-color: var(--accent);
+      color: var(--text);
+      background: #0a111c;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .hero-visual canvas {
+      display: block;
+      width: 100%;
+      height: min(52vw, 410px);
+      min-height: 330px;
+    }
+    .surface-status {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 14px;
+      border-top: 1px solid var(--line);
+      color: var(--dim);
+      font: 12px "IBM Plex Mono", ui-monospace, monospace;
+    }
+    .article {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 34px 24px 0;
+    }
+    .article h2 {
+      margin: 58px 0 16px;
+      font-family: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+    .article h3 {
+      margin: 34px 0 10px;
+      font-family: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
+      font-size: 24px;
+      letter-spacing: 0;
+    }
+    .article p, .article li {
+      color: var(--muted);
+      font-size: 17px;
+    }
+    .article p { margin: 0 0 18px; }
+    .article strong { color: var(--text); font-weight: 600; }
+    .article a { color: var(--accent); border-bottom: 1px solid rgba(53,224,216,.35); }
+    .article ul, .article ol { margin: 0 0 24px 22px; padding: 0; }
+    .article li { margin: 8px 0; }
+    .callout {
+      margin: 30px 0;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      background: rgba(12,19,32,.82);
+    }
+    .callout p:last-child { margin-bottom: 0; }
+    .pipeline {
+      margin: 28px 0;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(12,19,32,.85);
+    }
+    .stage {
+      padding: 18px;
+      border-right: 1px solid var(--line);
+      min-height: 190px;
+    }
+    .stage:last-child { border-right: 0; }
+    .stage b {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text);
+      font: 700 14px "IBM Plex Mono", ui-monospace, monospace;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .stage p {
+      margin: 0;
+      font-size: 14.5px;
+      line-height: 1.48;
+    }
+    .stage small {
+      display: block;
+      margin-top: 12px;
+      color: var(--dim);
+      font: 12px "IBM Plex Mono", ui-monospace, monospace;
+    }
+    pre {
+      overflow: auto;
+      margin: 24px 0;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #050910;
+      color: #d7e4ef;
+      font: 13px/1.55 "IBM Plex Mono", ui-monospace, monospace;
+    }
+    code {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      color: #d7e4ef;
+    }
+    .wide {
+      max-width: 1180px;
+      margin: 50px auto 0;
+      padding: 0 24px;
+    }
+    .runtime-panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--panel);
+    }
+    .runtime-bar {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 13px 16px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--line);
+      font: 12px "IBM Plex Mono", ui-monospace, monospace;
+    }
+    .runtime-body {
+      display: grid;
+      grid-template-columns: minmax(0, .72fr) minmax(320px, .58fr);
+      gap: 0;
+    }
+    .runtime-copy {
+      padding: 24px;
+      border-right: 1px solid var(--line);
+    }
+    .runtime-copy p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 15.5px;
+    }
+    .runtime-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .runtime-kv {
+      padding: 12px;
+      border: 1px solid var(--line2);
+      border-radius: 8px;
+      background: rgba(255,255,255,.025);
+      color: var(--muted);
+      font: 12px "IBM Plex Mono", ui-monospace, monospace;
+    }
+    .runtime-kv b {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text);
+      font-weight: 600;
+    }
+    .runtime-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .runtime-button {
+      border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--accent) 14%, #08101a);
+      color: var(--text);
+      padding: 10px 13px;
+      cursor: pointer;
+      font: 700 12px "IBM Plex Mono", ui-monospace, monospace;
+    }
+    .runtime-button:hover { border-color: var(--accent); }
+    .runtime-log {
+      padding: 18px;
+      min-height: 260px;
+      max-height: 420px;
+      overflow: auto;
+      background: #050910;
+      color: #d7e4ef;
+      font: 12px/1.55 "IBM Plex Mono", ui-monospace, monospace;
+    }
+    .runtime-result {
+      margin-top: 16px;
+      color: var(--accent);
+      font: 13px/1.5 "IBM Plex Mono", ui-monospace, monospace;
+    }
+    .refs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .ref {
+      display: block;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,.03);
+    }
+    .ref span {
+      display: block;
+      color: var(--dim);
+      font: 12px "IBM Plex Mono", ui-monospace, monospace;
+      margin-bottom: 6px;
+    }
+    .ref b { color: var(--text); font-weight: 600; }
+    footer {
+      border-top: 1px solid var(--line);
+      color: var(--dim);
+      padding: 28px 24px;
+      font: 12px "IBM Plex Mono", ui-monospace, monospace;
+      text-align: center;
+    }
+    @media (max-width: 920px) {
+      .hero { grid-template-columns: 1fr; padding-top: 54px; }
+      .pipeline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stage:nth-child(2) { border-right: 0; }
+      .stage:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+      .refs { grid-template-columns: 1fr; }
+      .runtime-body { grid-template-columns: 1fr; }
+      .runtime-copy { border-right: 0; border-bottom: 1px solid var(--line); }
+    }
+    @media (max-width: 620px) {
+      nav { flex-wrap: wrap; }
+      .links { width: 100%; margin-left: 0; justify-content: space-between; font-size: 12px; }
+      .field-toolbar { grid-template-columns: 1fr; }
+      .pipeline { grid-template-columns: 1fr; }
+      .stage, .stage:nth-child(2) { border-right: 0; border-bottom: 1px solid var(--line); min-height: auto; }
+      .stage:last-child { border-bottom: 0; }
+      .surface-status { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <a class="brand" href="../">COGNIPILOT</a>
+      <div class="links">
+        <a href="../#toolchain">Toolchain</a>
+        <a href="../#safety">Safety</a>
+        <a href="./">Blog</a>
+        <a href="https://github.com/CogniPilot/rumoca" target="_blank" rel="noreferrer">Rumoca</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Rumoca / PDE / WebGPU</div>
+        <h1>Array-native PDEs in the browser: the Rumoca NACA airfoil example</h1>
+        <p class="lead">The NACA 2412 demo is not just a pretty flow field. It is a compact example of where Rumoca is going: Modelica arrays in, structured compiler IRs through the middle, and GPU kernels out the other side.</p>
+        <div class="meta">
+          <span>July 3, 2026</span>
+          <span>James Goppert</span>
+          <span>12 min read</span>
+        </div>
+      </div>
+      <aside class="hero-visual" aria-label="Interactive NACA field preview">
+        <div class="field-toolbar">
+          <label class="control">
+            <span><b>AoA</b><output id="aoa-out">8 deg</output></span>
+            <input id="aoa" type="range" min="-20" max="45" value="8" step="1">
+          </label>
+          <label class="control">
+            <span><b>Thickness</b><output id="thick-out">12%</output></span>
+            <input id="thick" type="range" min="6" max="24" value="12" step="1">
+          </label>
+          <label class="control">
+            <span><b>Camber</b><output id="camber-out">2%</output></span>
+            <input id="camber" type="range" min="0" max="8" value="2" step="1">
+          </label>
+          <label class="control">
+            <span><b>Field</b></span>
+            <select id="field">
+              <option value="vorticity">Vorticity</option>
+              <option value="pressure">Pressure</option>
+              <option value="speed">Speed</option>
+            </select>
+          </label>
+        </div>
+        <canvas id="flow-canvas"></canvas>
+        <div class="surface-status">
+          <span id="flow-status">Synthetic field preview</span>
+          <span>Open the embedded guide below for the live Rumoca run</span>
+        </div>
+      </aside>
+    </section>
+
+    <article class="article">
+      <p>Rumoca starts with a simple promise: write the physics once, preserve the semantics, and let different tools consume the representation they actually need. For flight software that matters because the model, the analysis, the controller, the generated code, and the verification artifacts should not drift apart.</p>
+
+      <p>The NACA airfoil PDE example in the Rumoca user guide is a useful stress test for that promise. It uses ordinary Modelica array variables and nested <code>for</code>-equations to express a method-of-lines discretization of a 2-D flow problem. Then the browser version compiles that model through Rumoca and runs the heavy path on the graphics card through WebGPU.</p>
+
+      <div class="callout">
+        <p><strong>The core idea:</strong> Rumoca does not force a large array model to become anonymous scalar soup too early. It keeps enough source-proven array and loop structure alive that downstream targets can emit real kernels: WebGPU/WGSL today, CUDA and JAX-style differentiable backends as the pipeline matures.</p>
+      </div>
+
+      <h2>The PDE Model</h2>
+      <p>Modelica is not a PDE language in the specialized CFD sense. It has no magic <code>solveNavierStokes()</code> primitive. What it does have is arrays, parameters, equations, and structural loops. That is enough to write method-of-lines models directly: discretize space into cells, assign states to each cell, and let time integration handle the resulting ODE or DAE system.</p>
+
+      <p>The airfoil example models 2-D incompressible flow around a NACA 2412 profile on a Cartesian grid. It keeps the model intentionally compact and browser-friendly by using two classical approximations.</p>
+
+      <ul>
+        <li><strong>Artificial compressibility</strong> gives pressure a fast dynamic equation instead of solving a pressure-Poisson algebraic constraint at every step.</li>
+        <li><strong>Brinkman penalization</strong> avoids body-fitted meshing. The NACA shape becomes a smooth solid mask, and a drag term damps velocity inside the body.</li>
+      </ul>
+
+      <p>That second point is where the NACA part becomes more than geometry. The solid mask is not a hard on/off indicator. It is a smooth <code>tanh</code> transition around the airfoil surface. At low resolution this makes the visualization easier to read, but the deeper point is differentiability: a smooth mask gives nonzero sensitivities with respect to camber, camber position, thickness, and angle of attack near the boundary.</p>
+
+      <pre><code class="language-modelica">parameter Integer NX = 30;
+parameter Integer NY = 18;
+Real u[NX, NY] "x velocity";
+Real v[NX, NY] "y velocity";
+Real q[NX, NY] "pressure / rho";
+Real sig[NX, NY] "smooth solid mask";
+
+for i in 2:NX - 1 loop
+  for j in 2:NY - 1 loop
+    der(u[i,j]) = advection_x + pressure_x + diffusion_x - sig[i,j] * u[i,j] / tau;
+    der(v[i,j]) = advection_y + pressure_y + diffusion_y - sig[i,j] * v[i,j] / tau;
+    der(q[i,j]) = -cs^2 * div_v + pressure_diffusion;
+  end for;
+end for;</code></pre>
+
+      <p>The snippet above is deliberately schematic. The important feature is the shape of the program: regular arrays and regular loop domains. That is what a compiler can preserve. If those loops are flattened into unrelated scalar expressions before the backend sees them, the GPU target has to rediscover the stencil pattern after the fact. Rumoca's Solve IR instead carries tensor program nodes, including affine stencil structure, so repeated grid work can become repeated GPU work naturally.</p>
+
+      <h2>The Pipeline Is the Product</h2>
+      <p>A lot of compilers ask users to hand over a source file and wait for an executable. Rumoca's design is different. The compiler pipeline exposes useful stopping points, and each point has a real audience.</p>
+
+      <div class="pipeline" aria-label="Rumoca compiler stages">
+        <div class="stage">
+          <b>AST</b>
+          <p>The source-level syntax tree. It is the right layer for formatters, diagnostics, documentation tools, and any workflow that cares about the text users wrote.</p>
+          <small>Source code view</small>
+        </div>
+        <div class="stage">
+          <b>Flat</b>
+          <p>A single flattened Modelica model with resolved names, expanded connections, symbolic arrays, and Modelica operators still intact.</p>
+          <small>Modelica semantics view</small>
+        </div>
+        <div class="stage">
+          <b>DAE</b>
+          <p>A concise mathematical system description. This is the stable symbolic contract for analysis, export, templates, and many algebraic backends.</p>
+          <small>Math system view</small>
+        </div>
+        <div class="stage">
+          <b>Solve</b>
+          <p>An implementable execution form: scalar register programs plus tensor nodes that can lower to interpreters, C, Rust, CUDA, WGSL, or JAX-like kernels.</p>
+          <small>Backend view</small>
+        </div>
+      </div>
+
+      <p>That "jump off anywhere" property is not a convenience feature. It is the architecture. If you want a source formatter, consume AST. If you want a flat-Modelica export, consume Flat. If you want symbolic optimization, consume DAE. If you want a shader, CUDA kernel, embedded C function, or differentiable numerical kernel, consume Solve.</p>
+
+      <pre><code class="language-sh">rumoca compile AirfoilFlow.mo --emit ast-json
+rumoca compile AirfoilFlow.mo --emit flat-mo
+rumoca compile AirfoilFlow.mo --emit dae-json
+rumoca compile AirfoilFlow.mo --emit solve-json
+rumoca compile AirfoilFlow.mo --target wgsl-solve --output gen/airfoil_gpu</code></pre>
+
+      <p>Templates can attach at the level that matches the job. A shader generator should not be scraping Modelica source text. A documentation tool should not need BLT ordering. A JAX backend should not need to reverse engineer loop nests from generated C. The point of the pipeline is to keep those concerns separated without hiding the model.</p>
+
+      <h2>Why Array-Native Matters</h2>
+      <p>The usual beginner explanation is "arrays are shorter to write." That is true, but it is not the real reason. The real reason is that arrays carry structure: rank, shape, layout, iteration domains, and neighbor access patterns. In a PDE discretization, that structure is the problem.</p>
+
+      <p>For the NACA example, each interior cell reads neighboring velocity and pressure values, computes finite-difference terms, applies the smooth body mask, and writes derivatives. A scalar backend can expand that faithfully. A GPU backend can instead treat it as a row-parallel stencil over a 2-D field. Both should come from the same model.</p>
+
+      <p>This is what "array native all the way through" means in practical terms:</p>
+
+      <ul>
+        <li>Users write <code>u[NX, NY]</code>, not a handmade state vector index map.</li>
+        <li>Flattening resolves the model without erasing every useful array boundary.</li>
+        <li>DAE lowering produces a lean symbolic system instead of stuffing solver artifacts into the math contract.</li>
+        <li>Solve lowering keeps tensor and stencil structure available for targets that can use it.</li>
+        <li>WebGPU can execute kernels on the graphics card while scalar fallbacks remain possible for CPU or embedded targets.</li>
+      </ul>
+
+      <h2>The Browser Path</h2>
+      <p>Rumoca's live guide uses the same compiler in the browser through WebAssembly. The published npm package is <a href="https://www.npmjs.com/package/@cognipilot/rumoca" target="_blank" rel="noreferrer"><code>@cognipilot/rumoca</code></a>; as of this post, the current registry version is 0.9.9. The hand-written browser runtime lives in the repository's <code>packages/rumoca-web</code> package and is staged into the published package as subpath exports such as <code>@cognipilot/rumoca/gpu</code> and <code>@cognipilot/rumoca/interactive</code>.</p>
+
+      <pre><code class="language-js">import init, { prepare_gpu_simulation } from "@cognipilot/rumoca";
+import { probeGpu, runGpuSimulation } from "@cognipilot/rumoca/gpu";
+
+await init();
+const gpu = await probeGpu();
+if (!gpu.ok) throw new Error(gpu.reason);
+
+const prep = JSON.parse(prepare_gpu_simulation(modelicaSource, "AirfoilFlow"));
+const result = await runGpuSimulation(gpu.adapter, prep, {
+  tStart: 0,
+  tEnd: 30,
+  outputDt: 0.1,
+  internalDt: 0.005,
+});</code></pre>
+
+      <p>The exact guide runner does more than this: editor setup, diagnostics, parameter controls, live input wiring, plotting, and visualization callbacks. But the core path is the one above: compile the Modelica model to a GPU-ready Solve representation, build WebGPU compute pipelines, then run an RK-style integrator in page.</p>
+
+      <p>For blog posts, the important operational detail is versioning. This page pins the exact <code>@cognipilot/rumoca@0.9.9</code> package in a small manifest and loads that immutable npm version through npm-backed CDN URLs. That means the post does not fetch <code>latest</code>, does not carry old runtime builds in this repository, and does not depend on the current user guide staying API-compatible forever.</p>
+
+      <p>There are caveats, and they are healthy. The current WebGPU path is experimental, uses f32, and intentionally freezes algebraics/events in the basic batch mode. The NACA grid is small and the Reynolds number is low. This is not a production CFD solver. It is a demonstration that a declarative physical model can retain enough structure to become a graphics-card computation without being rewritten in a shader language by hand.</p>
+
+      <h2>Why This Matters for CogniPilot</h2>
+      <p>CogniPilot is about safe autonomy, not just fast simulation. The flight stack needs models that can be inspected, transformed, proven against, compiled, and deployed. The NACA demo matters because it exercises a hard version of that problem: many states, structured arrays, nonlinear dynamics, and an execution target that wants parallel kernels.</p>
+
+      <p>If Rumoca can keep a PDE-like airfoil model coherent from source to GPU, the same machinery applies to less visual but more operationally important systems: reachable-set propagation, rotor and actuator models, sensor dynamics, estimator residuals, controller sensitivity analysis, and simulation-in-the-loop testing.</p>
+
+      <p>The strategic direction is straightforward: <strong>PDE today, neural ODEs tomorrow.</strong> Once a compiler can expose clean DAE and Solve forms, it becomes natural to connect physical models to differentiable programming workflows. A future neural ODE workflow should not require throwing away the Modelica model and rebuilding the system in a machine-learning framework. The physical model should remain the source of truth, while JAX, PyTorch, CasADi, CUDA, WGSL, or embedded targets receive representations designed for their job.</p>
+
+      <h2>Try the Pinned Runtime</h2>
+      <p>The panel below loads Rumoca 0.9.9 from the exact npm version named in this post's manifest and a compact NACA airfoil Modelica source bundled with this post. It can compile the model to DAE, lower it for the WebGPU path, and run a short GPU integration in browsers with WebGPU enabled. The full user-guide widget remains the best place to edit the larger example interactively; this blog panel is the archival, version-locked smoke path.</p>
+    </article>
+
+    <section class="wide" aria-label="Pinned Rumoca NACA runtime">
+      <div class="runtime-panel" data-rumoca-live data-manifest="rumoca-naca-manifest.json">
+        <div class="runtime-bar">
+          <span id="rumoca-runtime-status">Pinned runtime not loaded yet</span>
+          <a href="https://cognipilot.github.io/rumoca/user-guide/language/arrays-pde.html#_2-d-navier-stokes-flow-over-a-naca-2412-airfoil" target="_blank" rel="noreferrer">Open latest user-guide widget</a>
+        </div>
+        <div class="runtime-body">
+          <div class="runtime-copy">
+            <p>This is intentionally smaller than the guide's full NACA grid so it can act as a quick browser smoke test. It still exercises the same important path: Modelica arrays, stencil-like equations, DAE lowering, Solve preparation, and optional WebGPU execution.</p>
+            <div class="runtime-grid">
+              <div class="runtime-kv"><b>Runtime</b><span id="rumoca-pin">loading</span></div>
+              <div class="runtime-kv"><b>Model</b><span id="rumoca-model">loading</span></div>
+              <div class="runtime-kv"><b>Source</b><span>assets/rumoca-naca-airfoil.mo</span></div>
+              <div class="runtime-kv"><b>Wrapper</b><span>blog-rumoca-live-v1</span></div>
+            </div>
+            <div class="runtime-actions">
+              <button class="runtime-button" id="rumoca-compile" type="button">Compile DAE</button>
+              <button class="runtime-button" id="rumoca-gpu-prep" type="button">Prepare WebGPU</button>
+              <button class="runtime-button" id="rumoca-gpu-run" type="button">Run Short GPU Sim</button>
+            </div>
+            <div class="runtime-result" id="rumoca-result">Use the buttons to exercise the pinned runtime.</div>
+          </div>
+          <div class="runtime-log" id="rumoca-log" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <article class="article">
+      <h2>References</h2>
+      <p>These are the primary sources behind the post and the live example.</p>
+      <div class="refs">
+        <a class="ref" href="https://github.com/CogniPilot/rumoca" target="_blank" rel="noreferrer">
+          <span>Repository</span>
+          <b>CogniPilot/rumoca</b>
+        </a>
+        <a class="ref" href="https://cognipilot.github.io/rumoca/user-guide/language/arrays-pde.html" target="_blank" rel="noreferrer">
+          <span>User Guide</span>
+          <b>Arrays and Discretized PDEs</b>
+        </a>
+        <a class="ref" href="https://www.npmjs.com/package/@cognipilot/rumoca" target="_blank" rel="noreferrer">
+          <span>NPM</span>
+          <b>@cognipilot/rumoca</b>
+        </a>
+        <a class="ref" href="https://arxiv.org/abs/2606.14998" target="_blank" rel="noreferrer">
+          <span>Paper</span>
+          <b>Rumoca as a universal algebraic frontend</b>
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <a href="./">Blog</a> · <a href="../">CogniPilot</a> · Apache-2.0
+  </footer>
+
+  <script type="module" src="blog-rumoca-live-v1.js"></script>
+  <script>
+    (function () {
+      const canvas = document.getElementById('flow-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const els = {
+        aoa: document.getElementById('aoa'),
+        thick: document.getElementById('thick'),
+        camber: document.getElementById('camber'),
+        field: document.getElementById('field'),
+        aoaOut: document.getElementById('aoa-out'),
+        thickOut: document.getElementById('thick-out'),
+        camberOut: document.getElementById('camber-out'),
+        status: document.getElementById('flow-status')
+      };
+      const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+        canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      function camberLine(x, m, p) {
+        if (m <= 0) return 0;
+        return x < p
+          ? m / (p * p) * (2 * p * x - x * x)
+          : m / ((1 - p) * (1 - p)) * ((1 - 2 * p) + 2 * p * x - x * x);
+      }
+      function thickness(x, t) {
+        const s = Math.max(x, 0);
+        return 5 * t * (0.2969 * Math.sqrt(s) - 0.1260 * x - 0.3516 * x * x + 0.2843 * x * x * x - 0.1036 * x * x * x * x);
+      }
+      function mask(sc, nc, m, t) {
+        const p = 0.4;
+        const yc = camberLine(sc, m, p);
+        const yt = Math.sqrt(thickness(sc, t) ** 2 + 0.0025);
+        const epsn = 0.035;
+        const epss = 0.04;
+        const body = 0.5 * (1 - Math.tanh((Math.abs(nc - yc) - yt) / epsn));
+        const nose = 0.5 * (1 + Math.tanh(sc / epss));
+        const tail = 0.5 * (1 + Math.tanh((1 - sc) / epss));
+        return body * nose * tail;
+      }
+      function valueAt(x, y, aoa, m, t, mode, time) {
+        const ca = Math.cos(aoa), sa = Math.sin(aoa);
+        const sc = x * ca - y * sa;
+        const nc = x * sa + y * ca;
+        const sig = mask(sc, nc, m, t);
+        const upper = Math.exp(-((nc - 0.10 - 0.42 * m) ** 2) / 0.012) * Math.exp(-((sc - 0.36) ** 2) / 0.18);
+        const wake = Math.exp(-Math.max(0, sc - 1.0) * 1.6) * Math.exp(-(nc ** 2) / 0.055);
+        const stall = clamp((Math.abs(aoa) - 0.22) * 2.8, 0, 1);
+        const wave = Math.sin(18 * sc - 9 * nc + time * 0.0018) * wake * stall;
+        const speed = 1 + 0.95 * upper * Math.max(0, aoa + 0.2) + 0.35 * wave - 0.85 * sig;
+        const pressure = 0.35 - 0.9 * upper * Math.max(0, aoa + 0.15) + 0.45 * sig + 0.2 * wave;
+        const vort = 1.5 * wave + 0.7 * Math.sin(24 * nc + time * 0.002) * wake - 0.45 * upper * aoa;
+        if (mode === 'pressure') return pressure;
+        if (mode === 'speed') return speed;
+        return vort;
+      }
+      function color(x, mode) {
+        let r, g, b;
+        if (mode === 'pressure') {
+          const v = clamp((x + 0.8) / 1.7, 0, 1);
+          r = 22 + 220 * v; g = 72 + 100 * (1 - Math.abs(v - .5) * 2); b = 190 * (1 - v) + 38;
+        } else if (mode === 'speed') {
+          const v = clamp(x / 2.0, 0, 1);
+          r = 16 + 218 * v; g = 74 + 166 * v; b = 115 + 70 * (1 - v);
+        } else {
+          const v = clamp((x + 1.2) / 2.4, 0, 1);
+          r = 40 + 210 * v; g = 80 + 140 * (1 - Math.abs(v - .5) * 2); b = 215 * (1 - v) + 40;
+        }
+        return `rgb(${r|0},${g|0},${b|0})`;
+      }
+      function drawAirfoil(w, h, aoa, m, t) {
+        const cx = w * .31, cy = h * .52, chord = w * .44;
+        const ca = Math.cos(-aoa), sa = Math.sin(-aoa);
+        const pxy = (x, y) => {
+          const X = (x - .03) * chord;
+          const Y = -y * chord;
+          return [cx + X * ca - Y * sa, cy + X * sa + Y * ca];
+        };
+        ctx.beginPath();
+        for (let k = 0; k <= 80; k++) {
+          const x = k / 80;
+          const y = camberLine(x, m, 0.4) + thickness(x, t);
+          const p = pxy(x, y);
+          if (k === 0) ctx.moveTo(p[0], p[1]); else ctx.lineTo(p[0], p[1]);
+        }
+        for (let k = 80; k >= 0; k--) {
+          const x = k / 80;
+          const y = camberLine(x, m, 0.4) - thickness(x, t);
+          const p = pxy(x, y);
+          ctx.lineTo(p[0], p[1]);
+        }
+        ctx.closePath();
+        ctx.fillStyle = '#03070c';
+        ctx.fill();
+        ctx.strokeStyle = '#f3f7fb';
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+      }
+      function draw(time) {
+        const w = canvas.clientWidth || 620;
+        const h = canvas.clientHeight || 360;
+        const aoaDeg = Number(els.aoa.value);
+        const aoa = aoaDeg * Math.PI / 180;
+        const thick = Number(els.thick.value) / 100;
+        const camber = Number(els.camber.value) / 100;
+        const mode = els.field.value;
+        els.aoaOut.textContent = `${aoaDeg} deg`;
+        els.thickOut.textContent = `${Math.round(thick * 100)}%`;
+        els.camberOut.textContent = `${Math.round(camber * 100)}%`;
+        els.status.textContent = `${mode} preview · NACA ${Math.round(camber * 100)}4${String(Math.round(thick * 100)).padStart(2, '0')}`;
+
+        const nx = 86, ny = 42;
+        const cw = w / nx, ch = h / ny;
+        for (let i = 0; i < nx; i++) {
+          for (let j = 0; j < ny; j++) {
+            const x = i / nx * 2.8 - 0.45;
+            const y = (0.5 - j / ny) * 1.35;
+            const v = valueAt(x, y, aoa, camber, thick, mode, time);
+            ctx.fillStyle = color(v, mode);
+            ctx.fillRect(i * cw, j * ch, cw + 1, ch + 1);
+          }
+        }
+        ctx.globalAlpha = 0.22;
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1;
+        for (let k = 0; k < 13; k++) {
+          const y = h * (0.16 + k * 0.056);
+          ctx.beginPath();
+          for (let x = 0; x <= w; x += 12) {
+            const yy = y + Math.sin(x * .024 + k * .7 + time * .0016) * 6;
+            if (x === 0) ctx.moveTo(x, yy); else ctx.lineTo(x, yy);
+          }
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+        drawAirfoil(w, h, aoa, camber, thick);
+        requestAnimationFrame(draw);
+      }
+      resize();
+      window.addEventListener('resize', resize);
+      ['input', 'change'].forEach((eventName) => {
+        els.aoa.addEventListener(eventName, () => {});
+        els.thick.addEventListener(eventName, () => {});
+        els.camber.addEventListener(eventName, () => {});
+        els.field.addEventListener(eventName, () => {});
+      });
+      requestAnimationFrame(draw);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "schema": "blog-rumoca-live-v1",
+  "title": "Rumoca NACA Airfoil PDE Runtime",
+  "packageName": "@cognipilot/rumoca",
+  "rumocaVersion": "0.9.9",
+  "packageIntegrity": "sha512-7i4VjsYjvTVc0LlBzKU8pnk8JZutj7ctiCnHGzuIXyaZYNo8sbssNiINYIs9wVUCH6hXVHTN0g2p49GFqCU8fQ==",
+  "packageShasum": "a26fa63e94bccef2939789a9ac2c38979a399983",
+  "runtimeBases": [
+    "https://cdn.jsdelivr.net/npm/@cognipilot/rumoca@0.9.9/",
+    "https://unpkg.com/@cognipilot/rumoca@0.9.9/"
+  ],
+  "modelName": "AirfoilFlowBlog",
+  "modelSource": "assets/rumoca-naca-airfoil.mo",
+  "notes": [
+    "Pinned exact npm package version loaded from npm-backed CDN URLs.",
+    "This blog widget performs a compile/DAE check and optional WebGPU Solve preparation/run without depending on the moving latest tag."
+  ]
+}
