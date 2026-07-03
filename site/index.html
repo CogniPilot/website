@@ -177,12 +177,20 @@ document.addEventListener('DOMContentLoaded', async function() {
 	      if ((!header || !footer) && attempt < 20) {
 	        setTimeout(function() { installHomepageAdditions(attempt + 1); }, 150);
 	        return;
-	      }
+      }
       if (header) {
+        const headerEl = header.closest('header');
+        if (headerEl) {
+          headerEl.setAttribute('style', 'position:sticky; top:0; z-index:20; border-bottom:1px solid var(--line); background:rgba(6,9,15,.82); backdrop-filter:blur(14px);');
+        }
+        header.setAttribute('style', 'width:min(100%,1320px); min-height:66px; margin:0 auto; padding:10px 24px; display:flex; align-items:center; gap:28px; box-sizing:border-box;');
+        const logo = header.querySelector('img');
+        if (logo) logo.setAttribute('style', 'height:34px; width:auto; display:block;');
         const navGroup = Array.from(header.querySelectorAll('div')).find(function(div) {
           return div.textContent.indexOf('Platform') !== -1 && div.textContent.indexOf('Events') !== -1;
         });
         if (navGroup) {
+          navGroup.setAttribute('style', 'margin-left:auto; display:flex; align-items:center; gap:34px; color:var(--muted); font:14px "IBM Plex Mono",ui-monospace,monospace; letter-spacing:.08em;');
           const navLinks = Array.from(navGroup.querySelectorAll('a'));
           navLinks.forEach(function(a) {
             if (['Platform', 'Toolchain', 'Safety', 'Foundation'].includes(a.textContent.trim())) a.remove();
@@ -193,7 +201,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             const overview = document.createElement('a');
             overview.href = './';
             overview.textContent = 'Mission';
-            overview.setAttribute('style', 'transition:color .18s;');
+            overview.setAttribute('aria-current', 'page');
             navGroup.insertBefore(overview, navGroup.querySelector('a') || null);
           }
           if (!Array.from(navGroup.querySelectorAll('a')).some(function(a) { return a.textContent.trim() === 'Membership'; })) {
@@ -211,6 +219,15 @@ document.addEventListener('DOMContentLoaded', async function() {
             const github = Array.from(navGroup.querySelectorAll('a')).find(function(a) { return a.textContent.trim().indexOf('GitHub') === 0; });
             navGroup.insertBefore(blog, github || null);
           }
+          Array.from(navGroup.querySelectorAll('a')).forEach(function(a) {
+            const label = a.textContent.trim();
+            if (label.indexOf('GitHub') === 0) {
+              a.setAttribute('style', 'padding:13px 20px; border-radius:10px; background:var(--accent); color:#04120f; font-weight:700; letter-spacing:.02em;');
+            } else {
+              a.setAttribute('style', 'transition:color .18s;' + (label === 'Mission' ? ' color:var(--accent);' : ''));
+              if (label === 'Mission') a.setAttribute('aria-current', 'page');
+            }
+          });
         }
       }
       if (footer && !document.getElementById('blog')) {

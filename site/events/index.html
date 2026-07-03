@@ -181,29 +181,28 @@
       background: rgba(12,19,32,.82);
       overflow: hidden;
     }
-    .calendar-placeholder {
-      min-height: 520px;
-      display: grid;
-      place-items: center;
-      padding: 34px;
-      text-align: center;
-      background:
-        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
-        linear-gradient(180deg, rgba(255,255,255,.025) 1px, transparent 1px),
-        rgba(7,16,26,.72);
-      background-size: 44px 44px, 44px 44px, auto;
-    }
-    .calendar-placeholder h3 {
-      margin: 0;
-      font-family: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
-      font-size: clamp(26px, 3vw, 38px);
-      line-height: 1.1;
-    }
-    .calendar-placeholder p {
-      margin: 0;
-      max-width: 640px;
+    .event-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 18px;
       color: var(--muted);
-      font-size: 16.5px;
+      font: 13px "IBM Plex Mono", ui-monospace, monospace;
+    }
+    .event-meta span span { color: var(--text); }
+    .calendar-frame iframe {
+      display: block;
+      width: 100%;
+      height: 640px;
+      border: 0;
+      background: #050910;
+      filter: invert(.9) hue-rotate(180deg) saturate(.75);
+    }
+    .calendar-note {
+      margin: 14px 0 0;
+      color: var(--dim);
+      font: 12.5px/1.5 "IBM Plex Mono", ui-monospace, monospace;
+      letter-spacing: .04em;
     }
     .button {
       display: inline-flex;
@@ -231,7 +230,7 @@
       main { padding: 58px 20px 72px; }
       .hero { grid-template-columns: 1fr; gap: 34px; min-height: auto; }
       .section-head { grid-template-columns: 1fr; }
-      .calendar-placeholder { min-height: 420px; padding: 26px; }
+      .calendar-frame iframe { height: 560px; }
     }
   </style>
 </head>
@@ -264,8 +263,13 @@
           <span>Public schedule</span>
         </div>
         <div class="hero-card-body">
-          <strong>Google Calendar lives here.</strong>
-          <p>The public CogniPilot Foundation calendar will be embedded below once the shared calendar URL is connected.</p>
+          <strong>3rd CogniPilot International Developer Summit.</strong>
+          <p>Save the date for the next international developer summit.</p>
+          <div class="event-meta">
+            <span>Date <span>September 2026</span></span>
+            <span>Location <span>Purdue University</span></span>
+          </div>
+          <a class="button" href="https://discord.com/invite/cognipilot" target="_blank" rel="noreferrer">Register interest &#8599;</a>
         </div>
       </aside>
     </section>
@@ -276,13 +280,11 @@
         <h2 id="google-calendar">Upcoming events</h2>
       </div>
       <div class="event-panel">
-        <div class="calendar-placeholder">
-          <div>
-            <h3>Calendar embed pending</h3>
-            <p>Share the public Google Calendar embed URL and this panel can be replaced with the live calendar iframe.</p>
-          </div>
+        <div class="calendar-frame">
+          <iframe title="CogniPilot events calendar" loading="lazy" src="https://calendar.google.com/calendar/embed?src=c_roou3qv5dvpe49a4j74e227c5s%40group.calendar.google.com&amp;mode=MONTH&amp;showTitle=0&amp;showPrint=0&amp;showCalendars=0&amp;showTz=1&amp;wkst=1"></iframe>
         </div>
       </div>
+      <p class="calendar-note">Synced live from the CogniPilot Foundation Google Calendar.</p>
     </section>
   </main>
   <footer>
