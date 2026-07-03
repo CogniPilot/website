@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>CogniPilot Foundation Membership</title>
+  <meta name="description" content="How to become a CogniPilot Foundation member and support open, safety-oriented autonomy infrastructure.">
+  <meta name="theme-color" content="#06090f">
+  <style>
+    :root {
+      --bg: #06090f;
+      --panel: #0c1320;
+      --text: #e6edf4;
+      --muted: #95a3b5;
+      --dim: #627084;
+      --line: rgba(255,255,255,.11);
+      --accent: #35e0d8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        linear-gradient(180deg, rgba(53,224,216,.05), rgba(6,9,15,0) 36rem),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255,255,255,.025) 1px, transparent 1px),
+        var(--bg);
+      background-size: auto, 44px 44px, 44px 44px, auto;
+      color: var(--text);
+      font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+    a { color: inherit; text-decoration: none; }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--line);
+      background: rgba(6,9,15,.82);
+      backdrop-filter: blur(14px);
+    }
+    nav {
+      width: min(100%, 1320px);
+      min-height: 66px;
+      margin: 0 auto;
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .brand { display: flex; align-items: center; }
+    .brand img { height: 34px; width: auto; display: block; }
+    .links {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 34px;
+      color: var(--muted);
+      font: 14px "IBM Plex Mono", ui-monospace, monospace;
+      letter-spacing: .08em;
+    }
+    .links a:hover, .links a[aria-current="page"] { color: var(--accent); }
+    .github-link {
+      padding: 13px 20px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #04120f;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+    main {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 104px 24px 96px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      min-height: 34px;
+      padding: 0 18px;
+      border: 1px solid rgba(53,224,216,.36);
+      border-radius: 999px;
+      background: rgba(53,224,216,.08);
+      color: var(--accent);
+      font: 12px "IBM Plex Mono", ui-monospace, monospace;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+    }
+    .pill::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 14px rgba(53,224,216,.75);
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, .52fr);
+      gap: 64px;
+      align-items: center;
+      min-height: calc(100vh - 210px);
+    }
+    h1 {
+      max-width: 760px;
+      margin: 30px 0 26px;
+      font-family: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
+      font-size: clamp(46px, 6vw, 84px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+    .lead {
+      max-width: 780px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 20px;
+      line-height: 1.55;
+    }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 26px;
+      padding: 12px 18px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #04120f;
+      font: 700 13px "IBM Plex Mono", ui-monospace, monospace;
+    }
+    .hero-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background:
+        linear-gradient(180deg, rgba(53,224,216,.08), rgba(53,224,216,0)),
+        rgba(12,19,32,.72);
+      overflow: hidden;
+    }
+    .hero-card-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      color: var(--dim);
+      font: 12px "IBM Plex Mono", ui-monospace, monospace;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .hero-card-body {
+      padding: 26px 24px 30px;
+    }
+    .hero-card-body strong {
+      display: block;
+      color: var(--text);
+      font-family: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
+      font-size: clamp(28px, 3vw, 42px);
+      line-height: 1.08;
+    }
+    .hero-card-body p {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+    }
+    .page-section {
+      padding-top: 36px;
+      border-top: 1px solid var(--line);
+    }
+    .section-label {
+      color: var(--accent);
+      font: 12px "IBM Plex Mono", ui-monospace, monospace;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(320px, .65fr);
+      gap: 28px;
+      align-items: start;
+      margin-top: 24px;
+    }
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(12,19,32,.82);
+      padding: 30px;
+    }
+    .panel h2 {
+      margin: 0 0 14px;
+      font-family: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
+      font-size: clamp(28px, 3vw, 42px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+    .panel p, .panel li {
+      color: var(--muted);
+      font-size: 16.5px;
+    }
+    .panel a {
+      color: var(--accent);
+      border-bottom: 1px solid rgba(53,224,216,.35);
+    }
+    .panel .button {
+      border-bottom: 0;
+    }
+    .panel p { margin: 0 0 18px; }
+    .panel ol { margin: 0; padding-left: 22px; }
+    .panel li { margin: 10px 0; }
+    .level-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .level {
+      min-height: 72px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,.035);
+      color: var(--text);
+      font: 700 13px "IBM Plex Mono", ui-monospace, monospace;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .member-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .member-logo {
+      min-height: 110px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,.03);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+    .member-logo img {
+      display: block;
+      width: 100%;
+      max-width: 280px;
+      height: auto;
+    }
+    .member-logo:first-child img { max-width: 160px; }
+    .member-label {
+      margin-top: 12px;
+      color: var(--dim);
+      font: 12px "IBM Plex Mono", ui-monospace, monospace;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    footer {
+      border-top: 1px solid var(--line);
+      color: var(--dim);
+      padding: 28px 24px;
+      font: 12px "IBM Plex Mono", ui-monospace, monospace;
+      text-align: center;
+    }
+    @media (max-width: 920px) {
+      .content-grid { grid-template-columns: 1fr; }
+      .level-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 820px) {
+      nav { min-height: auto; flex-wrap: wrap; padding: 12px 20px; }
+      .brand img { height: 32px; }
+      .links { width: 100%; margin-left: 0; justify-content: flex-start; gap: 16px; overflow-x: auto; font-size: 12px; }
+      .github-link { padding: 10px 14px; border-radius: 8px; }
+      main { padding: 58px 20px 72px; }
+      .hero { grid-template-columns: 1fr; gap: 34px; min-height: auto; }
+      .member-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <a class="brand" href="../" aria-label="CogniPilot home">
+        <img src="../assets/cognipilot-logo-dark.png" alt="CogniPilot">
+      </a>
+      <div class="links">
+        <a href="../">Mission</a>
+        <a href="./" aria-current="page">Membership</a>
+        <a href="../events/">Events</a>
+        <a href="../blog/">Blog</a>
+        <a class="github-link" href="https://github.com/CogniPilot" target="_blank" rel="noreferrer">GitHub &#8599;</a>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <section class="hero">
+      <div>
+        <div class="pill">Foundation Membership</div>
+        <h1>Help steer open, safe autonomy infrastructure.</h1>
+        <p class="lead">CogniPilot Foundation members support the shared engineering, verification, governance, and community work behind the open flight stack. Members have a say in the direction of the foundation.</p>
+        <a class="button" href="mailto:membership@cognipilot.com?subject=CogniPilot%20Foundation%20membership%20application">Apply by email</a>
+      </div>
+      <aside class="hero-card" aria-label="Membership levels">
+        <div class="hero-card-header">
+          <span>Levels</span>
+          <span>Foundation</span>
+        </div>
+        <div class="hero-card-body">
+          <strong>Platinum, Gold, Silver, and Copper.</strong>
+          <p>Membership is available across sponsor levels so companies, universities, labs, and aligned organizations can participate at the right scale.</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="page-section" aria-labelledby="membership-instructions">
+      <div class="section-label">How to Join</div>
+      <div class="content-grid">
+        <div class="panel">
+          <h2 id="membership-instructions">Apply for membership</h2>
+          <p>Email the foundation with enough context for the membership discussion to start cleanly.</p>
+          <ol>
+            <li>Send a note to <a href="mailto:membership@cognipilot.com">membership@cognipilot.com</a> with your organization name, primary contact, and the membership level you want to discuss.</li>
+            <li>Briefly describe how your organization expects to use, support, or contribute to CogniPilot and open safety-oriented autonomy infrastructure.</li>
+            <li>The foundation will follow up on fit, level, contribution expectations, and the next steps for onboarding.</li>
+          </ol>
+          <a class="button" href="mailto:membership@cognipilot.com?subject=CogniPilot%20Foundation%20membership%20application">Start membership application</a>
+        </div>
+        <aside class="panel" aria-labelledby="membership-levels">
+          <h2 id="membership-levels">Membership levels</h2>
+          <p>Members participate at Platinum, Gold, Silver, and Copper levels. Founding members are recognized below and on the mission page.</p>
+          <div class="level-grid" aria-label="Membership levels">
+            <div class="level">Platinum</div>
+            <div class="level">Gold</div>
+            <div class="level">Silver</div>
+            <div class="level">Copper</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="page-section" aria-labelledby="founding-members">
+      <div class="section-label">Founding Platinum Members</div>
+      <div class="content-grid">
+        <div class="panel">
+          <h2 id="founding-members">Members</h2>
+          <p>NXP and Purdue University are founding Platinum members of the CogniPilot Foundation.</p>
+          <div class="member-grid" aria-label="Founding Platinum members">
+            <div>
+              <div class="member-logo">
+                <img src="../assets/nxp-logo.svg" alt="NXP" loading="lazy">
+              </div>
+              <div class="member-label">Founding Platinum Member</div>
+            </div>
+            <div>
+              <div class="member-logo">
+                <img src="../assets/purdue-university-logo.svg" alt="Purdue University" loading="lazy">
+              </div>
+              <div class="member-label">Founding Platinum Member</div>
+            </div>
+          </div>
+        </div>
+        <aside class="panel">
+          <h2>Why membership matters</h2>
+          <p>CogniPilot is infrastructure for teams that want autonomy software to be open, inspectable, verifiable, and shared across organizations instead of rebuilt in isolation.</p>
+          <p>Membership gives sponsors and research partners a structured way to support that work and help guide the foundation roadmap.</p>
+        </aside>
+      </div>
+    </section>
+  </main>
+  <footer>
+    CogniPilot Foundation · Apache-2.0 · Developed in the open
+  </footer>
+</body>
+</html>

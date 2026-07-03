@@ -69,21 +69,44 @@
       letter-spacing: .02em;
     }
     main {
-      max-width: 1120px;
+      max-width: 1320px;
       margin: 0 auto;
-      padding: 78px 24px 96px;
+      padding: 104px 24px 96px;
     }
-    .eyebrow {
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      min-height: 34px;
+      padding: 0 18px;
+      border: 1px solid rgba(53,224,216,.36);
+      border-radius: 999px;
+      background: rgba(53,224,216,.08);
       color: var(--accent);
       font: 12px "IBM Plex Mono", ui-monospace, monospace;
-      letter-spacing: .22em;
+      letter-spacing: .28em;
       text-transform: uppercase;
     }
+    .pill::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 14px rgba(53,224,216,.75);
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, .52fr);
+      gap: 64px;
+      align-items: center;
+      min-height: calc(100vh - 210px);
+    }
     h1 {
-      max-width: 860px;
-      margin: 18px 0;
+      max-width: 760px;
+      margin: 30px 0 26px;
       font-family: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
-      font-size: clamp(42px, 7vw, 78px);
+      font-size: clamp(46px, 6vw, 84px);
       line-height: 1.02;
       letter-spacing: 0;
     }
@@ -91,25 +114,94 @@
       max-width: 780px;
       margin: 0;
       color: var(--muted);
-      font-size: 19px;
+      font-size: 20px;
+      line-height: 1.55;
     }
-    .event-panel {
-      margin-top: 56px;
-      padding: 34px;
+    .hero-card {
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: rgba(12,19,32,.82);
+      border-radius: 12px;
+      background:
+        linear-gradient(180deg, rgba(53,224,216,.08), rgba(53,224,216,0)),
+        rgba(12,19,32,.72);
+      overflow: hidden;
     }
-    .event-panel h2 {
-      margin: 0 0 12px;
+    .hero-card-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      color: var(--dim);
+      font: 12px "IBM Plex Mono", ui-monospace, monospace;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .hero-card-body {
+      padding: 26px 24px 30px;
+    }
+    .hero-card-body strong {
+      display: block;
+      color: var(--text);
       font-family: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
-      font-size: clamp(26px, 3.5vw, 42px);
+      font-size: clamp(28px, 3vw, 42px);
+      line-height: 1.08;
+    }
+    .hero-card-body p {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+    }
+    .calendar-section {
+      padding-top: 36px;
+      border-top: 1px solid var(--line);
+    }
+    .section-label {
+      color: var(--accent);
+      font: 12px "IBM Plex Mono", ui-monospace, monospace;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 24px;
+      align-items: end;
+      margin: 10px 0 24px;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-family: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
+      font-size: clamp(28px, 3vw, 42px);
       line-height: 1.08;
       letter-spacing: 0;
     }
-    .event-panel p {
+    .event-panel {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(12,19,32,.82);
+      overflow: hidden;
+    }
+    .calendar-placeholder {
+      min-height: 520px;
+      display: grid;
+      place-items: center;
+      padding: 34px;
+      text-align: center;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255,255,255,.025) 1px, transparent 1px),
+        rgba(7,16,26,.72);
+      background-size: 44px 44px, 44px 44px, auto;
+    }
+    .calendar-placeholder h3 {
       margin: 0;
-      max-width: 760px;
+      font-family: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
+      font-size: clamp(26px, 3vw, 38px);
+      line-height: 1.1;
+    }
+    .calendar-placeholder p {
+      margin: 0;
+      max-width: 640px;
       color: var(--muted);
       font-size: 16.5px;
     }
@@ -136,7 +228,10 @@
       .brand img { height: 32px; }
       .links { width: 100%; margin-left: 0; justify-content: flex-start; gap: 16px; overflow-x: auto; font-size: 12px; }
       .github-link { padding: 10px 14px; border-radius: 8px; }
-      .event-panel { padding: 26px; }
+      main { padding: 58px 20px 72px; }
+      .hero { grid-template-columns: 1fr; gap: 34px; min-height: auto; }
+      .section-head { grid-template-columns: 1fr; }
+      .calendar-placeholder { min-height: 420px; padding: 26px; }
     }
   </style>
 </head>
@@ -148,7 +243,7 @@
       </a>
       <div class="links">
         <a href="../">Mission</a>
-        <a href="../#foundation-support">Membership</a>
+        <a href="../membership/">Membership</a>
         <a href="./" aria-current="page">Events</a>
         <a href="../blog/">Blog</a>
         <a class="github-link" href="https://github.com/CogniPilot" target="_blank" rel="noreferrer">GitHub &#8599;</a>
@@ -156,14 +251,38 @@
     </nav>
   </header>
   <main>
-    <div class="eyebrow">Foundation Events</div>
-    <h1>Events for open, safe autonomy.</h1>
-    <p class="lead">CogniPilot Foundation events, working sessions, and community meetings will live here as separate pages instead of being buried in the homepage flow.</p>
+    <section class="hero">
+      <div>
+        <div class="pill">Foundation Events</div>
+        <h1>Calendar for the open flight stack.</h1>
+        <p class="lead">CogniPilot Foundation meetings, summits, workshops, and community sessions live here. The mission page stays focused on the project; events and scheduling belong on this page.</p>
+        <a class="button" href="mailto:membership@cognipilot.com?subject=CogniPilot%20Foundation%20events">Contact the foundation</a>
+      </div>
+      <aside class="hero-card" aria-label="Events status">
+        <div class="hero-card-header">
+          <span>Calendar</span>
+          <span>Public schedule</span>
+        </div>
+        <div class="hero-card-body">
+          <strong>Google Calendar lives here.</strong>
+          <p>The public CogniPilot Foundation calendar will be embedded below once the shared calendar URL is connected.</p>
+        </div>
+      </aside>
+    </section>
 
-    <section class="event-panel" aria-labelledby="upcoming-events">
-      <h2 id="upcoming-events">Upcoming Events</h2>
-      <p>No public events are posted yet. Foundation meetings, summits, workshops, and community sessions will be listed here when dates are ready.</p>
-      <a class="button" href="mailto:membership@cognipilot.com?subject=CogniPilot%20Foundation%20events">Contact the foundation</a>
+    <section class="calendar-section" aria-labelledby="google-calendar">
+      <div class="section-label">Google Calendar</div>
+      <div class="section-head">
+        <h2 id="google-calendar">Upcoming events</h2>
+      </div>
+      <div class="event-panel">
+        <div class="calendar-placeholder">
+          <div>
+            <h3>Calendar embed pending</h3>
+            <p>Share the public Google Calendar embed URL and this panel can be replaced with the live calendar iframe.</p>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
   <footer>

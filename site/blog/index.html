@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <title>CogniPilot Blog</title>
+  <title>CogniPilot Developer Blog</title>
   <meta name="description" content="Technical notes from the CogniPilot Foundation on safe autonomy, Rumoca, verification, and compiler-driven flight software.">
   <meta name="theme-color" content="#06090f">
   <style>
@@ -65,7 +65,7 @@
       font: 14px "IBM Plex Mono", ui-monospace, monospace;
       letter-spacing: .08em;
     }
-    .links a:hover { color: var(--accent); }
+    .links a:hover, .links a[aria-current="page"] { color: var(--accent); }
     .github-link {
       padding: 13px 20px;
       border-radius: 10px;
@@ -75,22 +75,97 @@
       letter-spacing: .02em;
     }
     main {
-      max-width: 1240px;
+      max-width: 1320px;
       margin: 0 auto;
-      padding: 60px 32px 96px;
+      padding: 104px 24px 96px;
     }
-    .eyebrow {
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      min-height: 34px;
+      padding: 0 18px;
+      border: 1px solid rgba(53,224,216,.36);
+      border-radius: 999px;
+      background: rgba(53,224,216,.08);
+      color: var(--accent);
+      font: 12px "IBM Plex Mono", ui-monospace, monospace;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+    }
+    .pill::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 14px rgba(53,224,216,.75);
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, .52fr);
+      gap: 64px;
+      align-items: center;
+      min-height: calc(100vh - 210px);
+    }
+    h1 {
+      max-width: 760px;
+      margin: 30px 0 26px;
+      font-family: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
+      font-size: clamp(46px, 6vw, 84px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+    .lead {
+      max-width: 780px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 20px;
+      line-height: 1.55;
+    }
+    .hero-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background:
+        linear-gradient(180deg, rgba(53,224,216,.08), rgba(53,224,216,0)),
+        rgba(12,19,32,.72);
+      overflow: hidden;
+    }
+    .hero-card-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      color: var(--dim);
+      font: 12px "IBM Plex Mono", ui-monospace, monospace;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .hero-card-body {
+      padding: 26px 24px 30px;
+    }
+    .hero-card-body strong {
+      display: block;
+      color: var(--text);
+      font-family: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
+      font-size: clamp(28px, 3vw, 42px);
+      line-height: 1.08;
+    }
+    .hero-card-body p {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+    }
+    .section-label {
       color: var(--accent);
       font: 12px "IBM Plex Mono", ui-monospace, monospace;
       letter-spacing: .22em;
       text-transform: uppercase;
     }
-    h1 {
-      margin: 10px 0 0;
-      font-family: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
-      font-size: clamp(26px, 3vw, 38px);
-      line-height: 1.08;
-      letter-spacing: 0;
+    .post-section {
+      padding-top: 36px;
+      border-top: 1px solid var(--line);
     }
     .post-grid {
       display: grid;
@@ -169,6 +244,8 @@
       .brand img { height: 32px; }
       .links { width: 100%; margin-left: 0; justify-content: flex-start; gap: 16px; overflow-x: auto; font-size: 12px; }
       .github-link { padding: 10px 14px; border-radius: 8px; }
+      main { padding: 58px 20px 72px; }
+      .hero { grid-template-columns: 1fr; gap: 34px; min-height: auto; }
       .visual { padding: 14px; }
       .post-copy { padding: 26px; }
     }
@@ -182,33 +259,51 @@
       </a>
       <div class="links">
         <a href="../">Mission</a>
-        <a href="../#foundation-support">Membership</a>
+        <a href="../membership/">Membership</a>
         <a href="../events/">Events</a>
-        <a href="./">Blog</a>
+        <a href="./" aria-current="page">Blog</a>
         <a class="github-link" href="https://github.com/CogniPilot" target="_blank" rel="noreferrer">GitHub &#8599;</a>
       </div>
     </nav>
   </header>
   <main>
-    <div class="eyebrow">06 / Blog</div>
-    <h1>Notes from the compiler boundary</h1>
+    <section class="hero">
+      <div>
+        <div class="pill">Developer Blog</div>
+        <h1>CogniPilot Developer Blog</h1>
+        <p class="lead">Long-form notes on Rumoca, compiler-driven modeling, verification, code generation, and the pieces that make CogniPilot a safety-oriented flight stack.</p>
+      </div>
+      <aside class="hero-card" aria-label="Blog status">
+        <div class="hero-card-header">
+          <span>Latest</span>
+          <span>Rumoca</span>
+        </div>
+        <div class="hero-card-body">
+          <strong>Cross-domain optimization starts with models that stay intact.</strong>
+          <p>The first article walks through the differentiable NACA airfoil example and the compiler pipeline behind it.</p>
+        </div>
+      </aside>
+    </section>
 
-    <section class="post-grid" aria-label="Blog posts">
-      <article class="post">
-        <div class="post-copy">
-          <div class="meta">
-            <span>Rumoca</span>
-            <span>July 3, 2026</span>
-            <span>12 min</span>
+    <section class="post-section" aria-label="Blog posts">
+      <div class="section-label">All posts</div>
+      <div class="post-grid">
+        <article class="post">
+          <div class="post-copy">
+            <div class="meta">
+              <span>Rumoca</span>
+              <span>July 3, 2026</span>
+              <span>12 min</span>
+            </div>
+            <h2>Cross-Domain Optimization with a Differentiable NACA Airfoil Model</h2>
+            <p>Walk through the NACA 2412 Navier-Stokes demo, the compiler pipeline behind it, and why preserving array structure all the way to WebGPU matters.</p>
+            <a class="button" href="rumoca-naca-pde.html">Read post</a>
           </div>
-          <h2>Cross-Domain Optimization with a Differentiable NACA Airfoil Model</h2>
-          <p>Walk through the NACA 2412 Navier-Stokes demo, the compiler pipeline behind it, and why preserving array structure all the way to WebGPU matters.</p>
-          <a class="button" href="rumoca-naca-pde.html">Read post</a>
-        </div>
-        <div class="visual">
-          <img src="assets/rumoca_naca_blog_poster.jpg" alt="Rumoca NACA airfoil PDE demo preview" loading="lazy">
-        </div>
-      </article>
+          <div class="visual">
+            <img src="assets/rumoca_naca_blog_poster.jpg" alt="Rumoca NACA airfoil PDE demo preview" loading="lazy">
+          </div>
+        </article>
+      </div>
     </section>
   </main>
   <footer>
