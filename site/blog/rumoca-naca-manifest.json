@@ -9,6 +9,7 @@
     "https://cdn.jsdelivr.net/npm/@cognipilot/rumoca@0.9.9/",
     "https://unpkg.com/@cognipilot/rumoca@0.9.9/"
   ],
+  "monacoBase": "https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/",
   "guideRunner": "rumoca-live.js",
   "guideStyles": "rumoca-live.css",
   "modelName": "AirfoilFlow",

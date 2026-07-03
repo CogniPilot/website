@@ -25,6 +25,8 @@ function loadClassicScript(src) {
 }
 
 function installGuideCompatibility() {
+  // The guide runner keys Monaco's theme off mdBook theme classes.
+  document.documentElement.classList.add('navy');
   if ('liveCheck' in window) return;
   Object.defineProperty(window, 'liveCheck', {
     configurable: true,
@@ -58,6 +60,9 @@ async function main() {
   }
 
   window.RUMOCA_LIVE_PKG_BASE = runtimeBase;
+  if (manifest.monacoBase) {
+    window.RUMOCA_LIVE_MONACO_BASE = manifest.monacoBase;
+  }
 
   const modelUrl = new URL(manifest.modelSource, manifestUrl);
   const vizUrl = new URL(manifest.vizSource, manifestUrl);
