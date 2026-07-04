@@ -7,8 +7,10 @@ const requiredFiles = [
   'site/index.html',
   'site/.nojekyll',
   'site/assets/cognipilot-logo-dark.png',
+  'site/assets/brain-poly-google.glb',
   'site/assets/nxp-logo.svg',
   'site/assets/purdue-university-logo.svg',
+  'site/platform-brain.js',
   'site/events/index.html',
   'site/membership/index.html',
   'site/blog/index.html',
@@ -107,14 +109,21 @@ if (!eventsIndex.includes('calendar.google.com/calendar/embed')) fail('Events pa
 if (!membershipIndex.includes('assets/nxp-logo.svg') || !membershipIndex.includes('assets/purdue-university-logo.svg')) {
   fail('Membership page is missing founding Platinum member logos.');
 }
+if (membershipIndex.includes('membership-brain.js') || membershipIndex.includes('brain-stage')) {
+  fail('Membership page should not include the rotating brain display.');
+}
 
 const home = read('site/index.html');
 const bootScript = home.match(/<script>([\s\S]*?)<\/script>/i);
 if (!bootScript) fail('Published homepage is missing its boot script.');
 new Function(bootScript[1]);
+new Function(read('site/platform-brain.js'));
 if (!home.includes('installHomepageAdditions')) fail('Published homepage is missing the post-render navigation hook.');
 if (!home.includes('Three principles') || !home.includes('REACHABILITY ANALYSIS') || !home.includes('PROVEN FLOW TUBE')) {
   fail('Published homepage is missing rich Mission page content.');
+}
+if (!home.includes('When Autopilots Start to Reason.') || !home.includes('platform-brain.js')) {
+  fail('Published homepage is missing the platform brain section.');
 }
 if (!home.includes('width:min(100%,1320px)')) fail('Mission page header normalization is missing.');
 if (!home.includes("membership.href = 'membership/'") || !home.includes("events.href = 'events/'")) {

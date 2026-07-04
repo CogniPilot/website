@@ -187,6 +187,10 @@
         <p style="margin:0; font-size:15.5px; line-height:1.62; color:var(--muted);">Mathematically modeled control with provable robustness. Small, auditable, fully integrated, and deliberately built to be understood, not just trusted.</p>
       </div>
     </div>
+    <div style="margin-top:20px; padding:22px 26px; border:1px solid var(--line); border-radius:14px; background:rgba(53,224,216,.035); display:grid; grid-template-columns:minmax(180px,.35fr) 1fr; gap:18px; align-items:start;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.14em; color:var(--accent); text-transform:uppercase;">Development bias</div>
+      <p style="margin:0; font-size:15.5px; line-height:1.62; color:var(--muted);">We prefer web-first development and modern tooling that keeps the stack inspectable, portable, and fast to iterate. Where systems code is required, we favor memory-safe tools such as <span style="color:var(--text);">Rust</span> so reliability is built into the engineering baseline.</p>
+    </div>
 
     <!-- governance quote -->
     <div style="margin-top:64px; padding:48px; border:1px solid var(--line); border-radius:20px; background:linear-gradient(120deg, rgba(53,224,216,.05), rgba(111,141,255,.04)); position:relative; overflow:hidden;">
@@ -202,40 +206,59 @@
   <section id="platform" style="max-width:1240px; margin:0 auto; padding:96px 32px 40px;">
     <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:14px;">
       <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.2em; color:var(--accent);">02 / PLATFORM</span>
-      <h2 style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:clamp(28px,3.4vw,42px); letter-spacing:-.02em; margin:0; color:var(--text);">One brain, five regions</h2>
+      <h2 style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:clamp(28px,3.4vw,42px); letter-spacing:-.02em; margin:0; color:var(--text);">When Autopilots Start to Reason.</h2>
     </div>
-    <p style="max-width:640px; margin:0 0 44px; font-size:16.5px; line-height:1.6; color:var(--muted);">CogniPilot is architected like the human brain: each subsystem is a specialized region, from Corti reasoning like the cortex down to Cerebri handling reflexes like the cerebellum. Together they form a full autonomy pipeline from perception to actuation.</p>
+    <p style="max-width:820px; margin:0; font-size:16.5px; line-height:1.62; color:var(--muted);">The CogniPilot name points toward the next shift in autonomy: aircraft that can plan, adapt, and make pilot-like decisions with learned models while the flight stack remains open, inspectable, and grounded in proven estimation and control.</p>
 
-    <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:14px;">
-      <div style="padding:26px 22px; border:1px solid var(--line); border-top:2px solid var(--corti); border-radius:14px; background:var(--panel); transition:transform .2s,background .2s;" style-hover="transform:translateY(-4px); background:rgba(111,141,255,.06)">
-        <div style="width:34px; height:34px; border-radius:9px; background:color-mix(in oklab, var(--corti) 22%, transparent); border:1px solid color-mix(in oklab, var(--corti) 55%, transparent);"></div>
-        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:21px; font-weight:600; margin:18px 0 4px; color:var(--text);">Corti</h3>
-        <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--corti); margin-bottom:12px;">Behavior &amp; planning</div>
-        <p style="margin:0; font-size:14px; line-height:1.55; color:var(--muted);">ML-based behavior, path planning, dynamic mission adaptation, and complex task execution.</p>
+    <div class="platform-brain-layout">
+      <div class="platform-brain-stage" role="group" aria-label="Rotating green vector brain visualization" data-model="site/assets/brain-poly-google.glb">
+        <canvas class="platform-brain-canvas"></canvas>
+        <svg class="platform-brain-callout-svg" aria-hidden="true">
+          <g class="platform-brain-callout-target">
+            <circle class="platform-brain-callout-target-pulse" cx="0" cy="0" r="21"></circle>
+            <circle class="platform-brain-callout-target-ring" cx="0" cy="0" r="13"></circle>
+            <circle class="platform-brain-callout-target-dot" cx="0" cy="0" r="3.8"></circle>
+            <path class="platform-brain-callout-target-cross" d="M -24 0 H -15 M 15 0 H 24 M 0 -24 V -15 M 0 15 V 24"></path>
+          </g>
+          <polyline class="platform-brain-callout-line" points=""></polyline>
+        </svg>
+        <div class="platform-brain-callout-label" aria-hidden="true">
+          <span class="platform-brain-callout-text"></span>
+        </div>
+        <div class="platform-brain-terminal" aria-hidden="true">
+          <div class="platform-brain-terminal-header">
+            <span>COGNIPILOT // NEURAL MAP</span>
+            <span>READOUT ACTIVE</span>
+          </div>
+          <div class="platform-brain-terminal-body">
+            <div class="platform-brain-terminal-title platform-brain-readout-title"></div>
+            <div class="platform-brain-terminal-meta platform-brain-readout-meta"></div>
+            <div class="platform-brain-terminal-text"><span class="platform-brain-readout-body"></span><span class="platform-brain-terminal-cursor">_</span></div>
+          </div>
+        </div>
+        <button class="platform-brain-info-button" type="button" aria-label="Brain model credits" aria-expanded="false">i</button>
+        <div class="platform-brain-credit-panel" hidden>
+          <strong>Brain model</strong>
+          <p><a href="https://poly.pizza/m/5mPRPZkI3qt" target="_blank" rel="noreferrer">Brain</a> by Poly by Google.</p>
+          <p>Licensed under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noreferrer">CC BY 3.0</a> via <a href="https://poly.pizza/m/5mPRPZkI3qt" target="_blank" rel="noreferrer">Poly Pizza</a>.</p>
+        </div>
       </div>
-      <div style="padding:26px 22px; border:1px solid var(--line); border-top:2px solid var(--pari); border-radius:14px; background:var(--panel); transition:transform .2s,background .2s;" style-hover="transform:translateY(-4px); background:rgba(242,195,58,.06)">
-        <div style="width:34px; height:34px; border-radius:9px; background:color-mix(in oklab, var(--pari) 22%, transparent); border:1px solid color-mix(in oklab, var(--pari) 55%, transparent);"></div>
-        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:21px; font-weight:600; margin:18px 0 4px; color:var(--text);">Pari</h3>
-        <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--pari); margin-bottom:12px;">Payloads &amp; fusion</div>
-        <p style="margin:0; font-size:14px; line-height:1.55; color:var(--muted);">ML for payloads, multi-sensor fusion, and real-time spatial awareness.</p>
-      </div>
-      <div style="padding:26px 22px; border:1px solid var(--line); border-top:2px solid var(--oculi); border-radius:14px; background:var(--panel); transition:transform .2s,background .2s;" style-hover="transform:translateY(-4px); background:rgba(239,90,95,.06)">
-        <div style="width:34px; height:34px; border-radius:9px; background:color-mix(in oklab, var(--oculi) 22%, transparent); border:1px solid color-mix(in oklab, var(--oculi) 55%, transparent);"></div>
-        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:21px; font-weight:600; margin:18px 0 4px; color:var(--text);">Oculi</h3>
-        <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--oculi); margin-bottom:12px;">Vision systems</div>
-        <p style="margin:0; font-size:14px; line-height:1.55; color:var(--muted);">Collision avoidance, visual-inertial odometry, and onboard perception.</p>
-      </div>
-      <div style="padding:26px 22px; border:1px solid var(--line); border-top:2px solid var(--tempi); border-radius:14px; background:var(--panel); transition:transform .2s,background .2s;" style-hover="transform:translateY(-4px); background:rgba(70,200,119,.06)">
-        <div style="width:34px; height:34px; border-radius:9px; background:color-mix(in oklab, var(--tempi) 22%, transparent); border:1px solid color-mix(in oklab, var(--tempi) 55%, transparent);"></div>
-        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:21px; font-weight:600; margin:18px 0 4px; color:var(--text);">Tempi</h3>
-        <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--tempi); margin-bottom:12px;">Comms &amp; connectivity</div>
-        <p style="margin:0; font-size:14px; line-height:1.55; color:var(--muted);">Communication, telemetry, and cloud connectivity.</p>
-      </div>
-      <div style="padding:26px 22px; border:1px solid var(--line); border-top:2px solid var(--cerebri); border-radius:14px; background:var(--panel); transition:transform .2s,background .2s;" style-hover="transform:translateY(-4px); background:rgba(53,224,216,.06)">
-        <div style="width:34px; height:34px; border-radius:9px; background:color-mix(in oklab, var(--cerebri) 22%, transparent); border:1px solid color-mix(in oklab, var(--cerebri) 55%, transparent);"></div>
-        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:21px; font-weight:600; margin:18px 0 4px; color:var(--text);">Cerebri</h3>
-        <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--cerebri); margin-bottom:12px;">Flight firmware</div>
-        <p style="margin:0; font-size:14px; line-height:1.55; color:var(--muted);">Controls, fail-safes, and manual override running on the Zephyr RTOS.</p>
+      <div class="platform-brain-copy">
+        <div class="platform-brain-copy-panel">
+          <h3>ML where it belongs</h3>
+          <p>Neural networks can classify, plan, and adapt at the mission layer. Flight-critical actuation still belongs to firmware that is small, reviewable, and built around explicit control laws.</p>
+        </div>
+        <div class="platform-brain-copy-panel">
+          <h3>Reasoning with a safety backbone</h3>
+          <p>CogniPilot pairs ML-based planning with provable estimation, control, fail-safes, manual override, and open governance so future autonomy can become more capable without becoming opaque.</p>
+        </div>
+        <div class="platform-brain-region-list" aria-label="CogniPilot autonomy regions">
+          <div class="platform-brain-region"><strong>Corti</strong><span>Behavior, mission planning, and adaptation.</span></div>
+          <div class="platform-brain-region"><strong>Pari</strong><span>Payloads, sensor fusion, and spatial awareness.</span></div>
+          <div class="platform-brain-region"><strong>Oculi</strong><span>Vision, odometry, and onboard perception.</span></div>
+          <div class="platform-brain-region"><strong>Tempi</strong><span>Telemetry, coordination, and connected tooling.</span></div>
+          <div class="platform-brain-region"><strong>Cerebri</strong><span>Controls, fail-safes, and manual override.</span></div>
+        </div>
       </div>
     </div>
   </section>
@@ -1108,5 +1131,6 @@ class Component extends DCLogic {
   }
 }
 </script>
+<script src="site/platform-brain.js"></script>
 </body>
 </html>

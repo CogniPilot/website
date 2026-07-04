@@ -96,11 +96,12 @@
       box-shadow: 0 0 14px rgba(53,224,216,.75);
     }
     .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(320px, .52fr);
-      gap: 64px;
-      align-items: center;
-      min-height: calc(100vh - 210px);
+      display: block;
+      max-width: 860px;
+      padding-bottom: 64px;
+    }
+    .hero-copy {
+      max-width: 860px;
     }
     h1 {
       max-width: 760px;
@@ -127,40 +128,6 @@
       background: var(--accent);
       color: #04120f;
       font: 700 13px "IBM Plex Mono", ui-monospace, monospace;
-    }
-    .hero-card {
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background:
-        linear-gradient(180deg, rgba(53,224,216,.08), rgba(53,224,216,0)),
-        rgba(12,19,32,.72);
-      overflow: hidden;
-    }
-    .hero-card-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 18px;
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--line);
-      color: var(--dim);
-      font: 12px "IBM Plex Mono", ui-monospace, monospace;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-    }
-    .hero-card-body {
-      padding: 26px 24px 30px;
-    }
-    .hero-card-body strong {
-      display: block;
-      color: var(--text);
-      font-family: "Space Grotesk", "IBM Plex Sans", system-ui, sans-serif;
-      font-size: clamp(28px, 3vw, 42px);
-      line-height: 1.08;
-    }
-    .hero-card-body p {
-      margin: 16px 0 0;
-      color: var(--muted);
-      font-size: 16px;
     }
     .page-section {
       padding-top: 36px;
@@ -248,13 +215,6 @@
       height: auto;
     }
     .member-logo:first-child img { max-width: 160px; }
-    .member-label {
-      margin-top: 12px;
-      color: var(--dim);
-      font: 12px "IBM Plex Mono", ui-monospace, monospace;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-    }
     footer {
       border-top: 1px solid var(--line);
       color: var(--dim);
@@ -272,10 +232,9 @@
       .links { width: 100%; margin-left: 0; justify-content: flex-start; gap: 16px; overflow-x: auto; font-size: 12px; }
       .github-link { padding: 10px 14px; border-radius: 8px; }
       main { padding: 58px 20px 72px; }
-      .hero { grid-template-columns: 1fr; gap: 34px; min-height: auto; }
+      .hero { padding-bottom: 48px; }
       .member-grid { grid-template-columns: 1fr; }
     }
-    @keyframes cp-blink { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
     body {
       --line: rgba(255,255,255,.09);
       --line2: rgba(255,255,255,.05);
@@ -322,12 +281,9 @@
       width: 6px;
       height: 6px;
       box-shadow: 0 0 10px var(--accent);
-      animation: cp-blink 2.4s ease-in-out infinite;
     }
     .hero {
-      grid-template-columns: 1.15fr .85fr;
-      gap: 48px;
-      min-height: auto;
+      max-width: 860px;
       padding-bottom: 64px;
     }
     h1 {
@@ -340,10 +296,6 @@
       margin: 24px 0 0;
       font-size: 18px;
       line-height: 1.6;
-    }
-    .hero-card {
-      border-radius: 20px;
-      background: linear-gradient(120deg, rgba(53,224,216,.05), rgba(111,141,255,.04));
     }
     .page-section {
       padding-top: 60px;
@@ -387,22 +339,11 @@
   </header>
   <main>
     <section class="hero">
-      <div>
+      <div class="hero-copy">
         <div class="pill">Foundation Membership</div>
         <h1>Help steer open, safe autonomy infrastructure.</h1>
         <p class="lead">CogniPilot Foundation members support the shared engineering, verification, governance, and community work behind the open flight stack. Members have a say in the direction of the foundation.</p>
-        <a class="button" href="mailto:membership@cognipilot.com?subject=CogniPilot%20Foundation%20membership%20application">Apply by email</a>
       </div>
-      <aside class="hero-card" aria-label="Membership levels">
-        <div class="hero-card-header">
-          <span>Levels</span>
-          <span>Foundation</span>
-        </div>
-        <div class="hero-card-body">
-          <strong>Platinum, Gold, Silver, and Copper.</strong>
-          <p>Membership is available across sponsor levels so companies, universities, labs, and aligned organizations can participate at the right scale.</p>
-        </div>
-      </aside>
     </section>
 
     <section class="page-section" aria-labelledby="membership-instructions">
@@ -420,7 +361,7 @@
         </div>
         <aside class="panel" aria-labelledby="membership-levels">
           <h2 id="membership-levels">Membership levels</h2>
-          <p>Members participate at Platinum, Gold, Silver, and Copper levels. Support level is currently assessed heuristically based on a variety of factors, including developer contributions, hardware contributions, and other forms of support. Founding members are recognized below and on the mission page.</p>
+          <p>Members participate at Platinum, Gold, Silver, and Copper levels. The appropriate level is discussed during onboarding and currently considers developer contributions, hardware contributions, sponsorship, and other forms of support.</p>
           <div class="level-grid" aria-label="Membership levels">
             <div class="level">Platinum</div>
             <div class="level">Gold</div>
@@ -432,23 +373,17 @@
     </section>
 
     <section class="page-section" aria-labelledby="founding-members">
-      <div class="section-label">Founding Platinum Members</div>
+      <div class="section-label">Founding Members</div>
       <div class="content-grid">
         <div class="panel">
-          <h2 id="founding-members">Members</h2>
+          <h2 id="founding-members">Founding Platinum members</h2>
           <p>NXP and Purdue University are founding Platinum members of the CogniPilot Foundation.</p>
           <div class="member-grid" aria-label="Founding Platinum members">
-            <div>
-              <div class="member-logo">
-                <img src="../assets/nxp-logo.svg" alt="NXP" loading="lazy">
-              </div>
-              <div class="member-label">Founding Platinum Member</div>
+            <div class="member-logo">
+              <img src="../assets/nxp-logo.svg" alt="NXP" loading="lazy">
             </div>
-            <div>
-              <div class="member-logo">
-                <img src="../assets/purdue-university-logo.svg" alt="Purdue University" loading="lazy">
-              </div>
-              <div class="member-label">Founding Platinum Member</div>
+            <div class="member-logo">
+              <img src="../assets/purdue-university-logo.svg" alt="Purdue University" loading="lazy">
             </div>
           </div>
         </div>
