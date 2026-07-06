@@ -119,7 +119,7 @@ if (!bootScript) fail('Published homepage is missing its boot script.');
 new Function(bootScript[1]);
 new Function(read('site/platform-brain.js'));
 if (!home.includes('installHomepageAdditions')) fail('Published homepage is missing the post-render navigation hook.');
-if (!home.includes('Three principles') || !home.includes('REACHABILITY ANALYSIS') || !home.includes('PROVEN FLOW TUBE')) {
+if (!home.includes('Three principles') || !home.includes('Urban Air Mobility Reachability Analysis') || !home.includes('FLOW TUBE')) {
   fail('Published homepage is missing rich Mission page content.');
 }
 if (!home.includes('When Autopilots Start to Reason.') || !home.includes('platform-brain.js')) {

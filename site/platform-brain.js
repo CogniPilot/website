@@ -682,26 +682,31 @@
       const hud = new THREE.Group();
       scene.add(hud);
 
-      function lineMaterial(opacity, color) {
+      function lineMaterial(opacity, color, options = {}) {
+        const additive = options.additive !== false;
         return new THREE.LineBasicMaterial({
           color: color || green,
           transparent: true,
           opacity,
-          blending: THREE.AdditiveBlending,
+          blending: additive ? THREE.AdditiveBlending : THREE.NormalBlending,
           depthWrite: false,
-          depthTest: false
+          depthTest: options.depthTest === true
         });
       }
 
       const fillMaterial = new THREE.MeshBasicMaterial({
         color: dimGreen,
         transparent: true,
-        opacity: 0.20,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
+        opacity: 0.34,
+        blending: THREE.NormalBlending,
+        depthWrite: true,
+        depthTest: true,
+        polygonOffset: true,
+        polygonOffsetFactor: 1,
+        polygonOffsetUnits: 1,
         side: THREE.DoubleSide
       });
-      const wireMaterial = lineMaterial(0.58);
+      const wireMaterial = lineMaterial(0.42, 0xe9fff1, { additive: false, depthTest: true });
       const activeMaterial = lineMaterial(0.92);
 
       function addHudRings() {

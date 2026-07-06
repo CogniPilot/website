@@ -36,6 +36,14 @@
   @keyframes cp-blink{ 0%,100%{ opacity:1; } 50%{ opacity:.25; } }
   @keyframes cp-float{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-8px); } }
   @keyframes cp-drift{ to{ background-position:0 -46px, -46px 0; } }
+  @keyframes reach-cursor{ 50%{ opacity:0; } }
+  .reach-terminal{ position:absolute; right:18px; bottom:18px; z-index:7; width:min(430px, calc(100% - 36px)); border:1px solid rgba(82,255,134,.30); background:rgba(4,12,7,.78); box-shadow:inset 0 0 18px rgba(82,255,134,.08), 0 0 18px rgba(82,255,134,.10); color:#b8ffd0; font-family:'IBM Plex Mono', ui-monospace, monospace; text-shadow:0 0 8px rgba(82,255,134,.55); pointer-events:none; }
+  .reach-terminal-header{ display:flex; justify-content:space-between; gap:14px; padding:8px 10px; border-bottom:1px solid rgba(82,255,134,.20); color:rgba(184,255,208,.76); font-size:9px; letter-spacing:.16em; text-transform:uppercase; }
+  .reach-terminal-body{ min-height:96px; padding:12px 13px 14px; }
+  .reach-terminal-title{ color:#52ff86; font-size:15px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; }
+  .reach-terminal-meta{ margin-top:6px; color:rgba(184,255,208,.68); font-size:10px; letter-spacing:.10em; text-transform:uppercase; }
+  .reach-terminal-text{ margin-top:10px; color:rgba(210,255,224,.88); font-size:12px; line-height:1.52; letter-spacing:.02em; }
+  .reach-terminal-cursor{ display:inline-block; width:.65em; color:#52ff86; animation:reach-cursor 1s steps(2,start) infinite; }
   ::selection{ background:var(--accent); color:#04120f; }
 
   /* ---------- responsive layout ---------- */
@@ -64,6 +72,8 @@
     [style*='padding: 52px 48px']{ padding: 36px 22px !important; }
     [style*='top: 16px; left: 20px']{ display: none; }
     [style*='translateX(-50%)']{ left: 20px !important; transform: none !important; }
+    .reach-terminal{ left:12px; right:12px; bottom:12px; width:auto; }
+    .reach-legend{ display:none !important; }
   }
   @media (max-width: 560px){
     [style*='grid-template-columns: repeat(5, 1fr)']{ grid-template-columns: 1fr !important; }
@@ -119,12 +129,6 @@
       <div style="display:flex; flex-wrap:wrap; gap:14px; margin-top:34px;">
         <a href="https://github.com/CogniPilot" target="_blank" style="font-family:'IBM Plex Mono',monospace; font-size:14px; font-weight:600; padding:14px 24px; border-radius:10px; background:var(--accent); color:#04120f; transition:transform .15s,filter .15s;" style-hover="filter:brightness(1.08); transform:translateY(-1px)">Explore on GitHub &#8599;</a>
         <a href="#toolchain" style="font-family:'IBM Plex Mono',monospace; font-size:14px; padding:14px 24px; border-radius:10px; border:1px solid var(--line); color:var(--text); transition:border-color .15s,background .15s;" style-hover="border-color:var(--accent); background:rgba(255,255,255,.03)">See how it works</a>
-      </div>
-      <div style="display:flex; flex-wrap:wrap; gap:26px; margin-top:44px; font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.06em; color:var(--dim);">
-        <span>ATT&nbsp;<span style="color:var(--accent);">NOMINAL</span></span>
-        <span>LOOP&nbsp;<span style="color:var(--text);">1&#8202;kHz</span></span>
-        <span>RTOS&nbsp;<span style="color:var(--text);">ZEPHYR</span></span>
-        <span>LIC&nbsp;<span style="color:var(--text);">APACHE&#8209;2.0</span></span>
       </div>
     </div>
 
@@ -329,19 +333,20 @@
       </div>
       <div style="border:1px solid var(--line); border-radius:18px; background:rgba(0,0,0,.28); padding:26px; font-family:'IBM Plex Mono',monospace; font-size:13.5px; line-height:1.9; color:var(--muted); box-shadow:0 30px 80px -40px rgba(0,0,0,.9);">
         <div style="display:flex; gap:8px; margin-bottom:18px;"><span style="width:11px; height:11px; border-radius:50%; background:#ef5a5f;"></span><span style="width:11px; height:11px; border-radius:50%; background:#f2c33a;"></span><span style="width:11px; height:11px; border-radius:50%; background:#46c877;"></span></div>
-        <div><span style="color:var(--dim);">$</span> <span style="color:var(--text);">cognipilot</span> status --loop</div>
-        <div style="color:var(--accent);">&#9679; control loop ......... 1000 Hz  OK</div>
-        <div style="color:var(--accent);">&#9679; state estimate ....... converged</div>
-        <div style="color:var(--accent);">&#9679; robustness margin .... verified</div>
-        <div style="color:var(--accent);">&#9679; fail-safe arm ........ ready</div>
-        <div style="color:var(--tempi);">&#9679; telemetry link ...... up</div>
-        <div style="margin-top:10px; color:var(--dim);">// all invariants hold: cleared for autonomous flight</div>
+        <div><span style="color:var(--dim);">$</span> <span style="color:var(--text);">cognipilot</span> status --flight</div>
+        <div style="color:var(--accent);">&#9679; flight computer ..... steady</div>
+        <div style="color:var(--accent);">&#9679; vehicle position ..... locked</div>
+        <div style="color:var(--accent);">&#9679; safety margin ....... verified</div>
+        <div style="color:var(--accent);">&#9679; backup controls ..... ready</div>
+        <div style="color:var(--tempi);">&#9679; telemetry link ...... connected</div>
+        <div style="margin-top:10px; color:var(--dim);">// safety checks passed: cleared for autonomous flight</div>
         <div style="margin-top:6px;"><span style="color:var(--dim);">$</span> <span style="display:inline-block; width:9px; height:16px; background:var(--accent); vertical-align:-3px; animation:cp-blink 1.1s step-end infinite;"></span></div>
       </div>
     </div>
     <div style="max-width:1240px; margin:44px auto 0; padding:0 32px;">
-      <div style="position:relative; border:1px solid var(--line); border-radius:18px; overflow:hidden; background:rgba(0,0,0,.34); box-shadow:0 30px 90px -46px rgba(0,0,0,.95);">
-        <div style="position:absolute; inset:0; background-image:linear-gradient(var(--line2) 1px,transparent 1px),linear-gradient(90deg,var(--line2) 1px,transparent 1px); background-size:44px 44px; opacity:.55;"></div>
+      <div style="position:relative; --reach-accent:#52ff86; --reach-warn:#ff9aa2; border:1px solid rgba(82,255,134,.18); border-radius:18px; overflow:hidden; background:#040c07; box-shadow:inset 0 0 0 1px rgba(82,255,134,.035), inset 0 0 42px rgba(82,255,134,.055), 0 30px 90px -46px rgba(0,0,0,.95);">
+        <div style="position:absolute; inset:0; background-image:linear-gradient(rgba(82,255,134,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(82,255,134,.032) 1px,transparent 1px); background-size:44px 44px; opacity:.62;"></div>
+        <div style="position:absolute; inset:0; pointer-events:none; background:radial-gradient(circle at 50% 42%, rgba(82,255,134,.075), transparent 58%), repeating-linear-gradient(180deg, rgba(82,255,134,.022) 0 1px, transparent 1px 7px); opacity:.42; mix-blend-mode:screen;"></div>
 
         <!-- view toggle -->
         <div style="position:absolute; top:14px; left:50%; transform:translateX(-50%); z-index:4; display:flex; gap:2px; padding:3px; border:1px solid var(--line); border-radius:9px; background:rgba(0,0,0,.5); backdrop-filter:blur(8px);">
@@ -354,15 +359,27 @@
           <canvas ref="{{ reach3dCanvas }}" style="position:absolute; inset:0; display:{{ show3dCanvas }}; width:100%; height:100%;"></canvas>
         </div>
 
-        <div style="position:absolute; top:16px; left:20px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; color:var(--muted);">REACHABILITY ANALYSIS &middot; PROVEN FLOW TUBE</div>
-        <div style="position:absolute; top:16px; right:20px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.14em; color:var(--accent);">&#9679; SET INVARIANT: SAFE</div>
-        <div style="position:absolute; bottom:16px; left:20px; display:flex; flex-wrap:wrap; gap:22px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.05em; color:var(--muted);">
-          <span style="display:flex; align-items:center; gap:8px;"><span style="width:18px; height:2px; background:var(--accent);"></span>Nominal trajectory</span>
-          <span style="display:flex; align-items:center; gap:8px;"><span style="width:12px; height:12px; border-radius:3px; background:color-mix(in oklab, var(--accent) 24%, transparent); border:1px solid color-mix(in oklab, var(--accent) 55%, transparent);"></span>Reachable set</span>
-          <span style="display:flex; align-items:center; gap:8px;"><span style="width:12px; height:12px; border-radius:50%; background:color-mix(in oklab,#ef5a5f 28%,transparent); border:1px solid #ef5a5f;"></span>Keep-out zone</span>
+        <div class="reach-terminal" aria-hidden="true">
+          <div class="reach-terminal-header">
+            <span>COGNIPILOT // FLOW TUBE</span>
+            <span>READOUT ACTIVE</span>
+          </div>
+          <div class="reach-terminal-body">
+            <div class="reach-terminal-title" ref="{{ reachReadoutTitle }}"></div>
+            <div class="reach-terminal-meta" ref="{{ reachReadoutMeta }}"></div>
+            <div class="reach-terminal-text"><span ref="{{ reachReadoutBody }}"></span><span class="reach-terminal-cursor">_</span></div>
+          </div>
+        </div>
+
+        <div style="position:absolute; top:16px; left:20px; max-width:calc(50% - 118px); line-height:1.35; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; color:var(--muted);">Urban Air Mobility Reachability Analysis</div>
+        <div style="position:absolute; top:16px; right:20px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.14em; color:var(--reach-accent); text-shadow:0 0 9px rgba(82,255,134,.45);">&#9679; SAFETY CHECK: PASS</div>
+        <div class="reach-legend" style="position:absolute; bottom:16px; left:20px; display:flex; flex-wrap:wrap; gap:22px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.05em; color:var(--muted);">
+          <span style="display:flex; align-items:center; gap:8px;"><span style="width:18px; height:2px; background:var(--reach-accent); box-shadow:0 0 8px rgba(82,255,134,.55);"></span>Nominal trajectory</span>
+          <span style="display:flex; align-items:center; gap:8px;"><span style="width:12px; height:12px; border-radius:3px; background:rgba(14,63,37,.52); border:1px solid rgba(233,255,241,.48); box-shadow:0 0 8px rgba(82,255,134,.18);"></span>Flow tube</span>
+          <span style="display:flex; align-items:center; gap:8px;"><span style="width:12px; height:12px; border-radius:50%; background:rgba(255,154,162,.18); border:1px solid var(--reach-warn); box-shadow:0 0 8px rgba(255,154,162,.24);"></span>Keep-out zone</span>
         </div>
       </div>
-      <p style="margin:18px 0 0; font-size:15px; line-height:1.62; color:var(--muted); max-width:780px;">Given bounded disturbances and a modeled vehicle, CogniPilot computes the entire set of states reachable along a mission. When that flow tube provably never intersects a keep-out zone, safety is <span style="color:var(--text);">guaranteed by construction</span>, not merely tested after the fact.</p>
+      <p style="margin:18px 0 0; font-size:15px; line-height:1.62; color:var(--muted); max-width:780px;">Given a vehicle model plus realistic limits for wind, control error, and tracking error, CogniPilot computes every place the aircraft could be along a mission. When that flow tube never intersects a keep-out zone, safety is <span style="color:var(--text);">guaranteed by construction</span>, not merely tested after the fact.</p>
     </div>
   </section>
 
@@ -503,6 +520,9 @@ class Component extends DCLogic {
     this.droneAlt = 12;
     this.path3d = this.route.map(([x,z]) => [x, this.droneAlt, z]);
     this.reachRef3d = React.createRef();
+    this.reachReadoutTitle = React.createRef();
+    this.reachReadoutMeta = React.createRef();
+    this.reachReadoutBody = React.createRef();
     this.state = { view: '3d' };
   }
 
@@ -510,12 +530,23 @@ class Component extends DCLogic {
     const a = this.props.accentColor || '#35e0d8';
     document.body.style.setProperty('--accent', a);
     document.body.style.setProperty('--cerebri', a);
+    document.body.style.setProperty('--reach-accent', '#52ff86');
+    document.body.style.setProperty('--hud-accent', a);
+  }
+
+  reachAccent(){
+    return (getComputedStyle(document.body).getPropertyValue('--reach-accent') || '#52ff86').trim();
+  }
+
+  hudAccent(){
+    return (getComputedStyle(document.body).getPropertyValue('--hud-accent') || '#35e0d8').trim();
   }
 
   loop(now){
     const s = (now - this.t0) / 1000;
     this.draw(s);
     if (this.state.view === '2d') this.drawReach(s);
+    this.updateReachReadout(s);
     this.render3D(s);
     if (this.motion) this.raf = requestAnimationFrame(this._loop);
   }
@@ -525,7 +556,7 @@ class Component extends DCLogic {
     this.motion = this.props.heroMotion !== false;
     this._loop = this.loop.bind(this);
     this.raf = requestAnimationFrame(this._loop);
-    this._onResize = () => { const s=(performance.now()-this.t0)/1000; this.draw(s); this.drawReach(s); this.resize3D(); };
+    this._onResize = () => { const s=(performance.now()-this.t0)/1000; this.draw(s); this.drawReach(s); this.updateReachReadout(s); this.resize3D(); };
     window.addEventListener('resize', this._onResize);
     this.wait3D();
   }
@@ -550,16 +581,17 @@ class Component extends DCLogic {
     renderer.setPixelRatio(Math.min(2, window.devicePixelRatio||1));
     const scene = new THREE.Scene();
     const cam = new THREE.PerspectiveCamera(46, 2, 0.1, 500);
-    scene.add(new THREE.AmbientLight(0xffffff, 0.85));
-    const dl = new THREE.DirectionalLight(0xffffff, 1.1); dl.position.set(30,50,20); scene.add(dl);
-    const dl2 = new THREE.DirectionalLight(0x6f8dff, 0.4); dl2.position.set(-30,10,-25); scene.add(dl2);
+    scene.add(new THREE.AmbientLight(0xb8ffd0, 0.42));
+    const dl = new THREE.DirectionalLight(0xe9fff1, 0.70); dl.position.set(30,50,20); scene.add(dl);
+    const dl2 = new THREE.DirectionalLight(0x52ff86, 0.30); dl2.position.set(-30,10,-25); scene.add(dl2);
 
     const curve = new THREE.CatmullRomCurve3(this.path3d.map(p=>new THREE.Vector3(...p)), false, 'catmullrom', 0.5);
     this.curve3d = curve;
-    scene.fog = new THREE.FogExp2(0x06090f, 0.0075);
+    scene.fog = new THREE.FogExp2(0x040c07, 0.0075);
 
     const SEG = 240, RAD = 30;
     const frames = curve.computeFrenetFrames(SEG, false);
+    this.frames3d = frames; this.seg3d = SEG; this.rad3d = RAD;
     const centers = [], radii = [];
     for (let i=0;i<=SEG;i++){ const u=i/SEG; centers.push(curve.getPoint(u)); radii.push(this.reachRadius(u)); }
 
@@ -581,8 +613,8 @@ class Component extends DCLogic {
     const skinGeo = new THREE.BufferGeometry();
     skinGeo.setAttribute('position', new THREE.Float32BufferAttribute(pos,3));
     skinGeo.setIndex(idx); skinGeo.computeVertexNormals();
-    const skin = new THREE.Mesh(skinGeo, new THREE.MeshStandardMaterial({
-      transparent:true, opacity:0.12, roughness:0.6, metalness:0.0,
+    const skin = new THREE.Mesh(skinGeo, new THREE.MeshBasicMaterial({
+      transparent:true, opacity:0.11,
       side:THREE.DoubleSide, depthWrite:false }));
     scene.add(skin);
 
@@ -599,31 +631,10 @@ class Component extends DCLogic {
     }
     const rings = new THREE.LineSegments(
       new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(ringPos,3)),
-      new THREE.LineBasicMaterial({ transparent:true, opacity:0.28 }));
+      new THREE.LineBasicMaterial({ color:0xe9fff1, transparent:true, opacity:0.48 }));
     scene.add(rings);
 
-    // --- sampled trajectory rollouts inside the tube (Monte-Carlo bundle) ---
     const threads = [];
-    const NT = 22;
-    for (let k=0;k<NT;k++){
-      const a0 = Math.random()*Math.PI*2;
-      const fr = 0.3 + Math.random()*0.7;      // radial fraction of this rollout
-      const drift = (Math.random()-0.5)*2.2;
-      const wob = 0.5 + Math.random()*1.4;
-      const tp = [];
-      for (let i=0;i<=SEG;i++){
-        const u=i/SEG, c=centers[i], N=frames.normals[i], B=frames.binormals[i], r=radii[i];
-        const a = a0 + drift*u + 0.35*Math.sin(u*Math.PI*wob*3);
-        const rr = r*fr*(0.55+0.45*Math.sin(u*Math.PI*wob*4 + k));
-        tp.push(new THREE.Vector3(
-          c.x + (N.x*Math.cos(a)+B.x*Math.sin(a)*0.68)*rr,
-          c.y + (N.y*Math.cos(a)+B.y*Math.sin(a)*0.68)*rr,
-          c.z + (N.z*Math.cos(a)+B.z*Math.sin(a)*0.68)*rr ));
-      }
-      const ln = new THREE.Line(new THREE.BufferGeometry().setFromPoints(tp),
-        new THREE.LineBasicMaterial({ transparent:true, opacity:0.16 }));
-      threads.push(ln); scene.add(ln);
-    }
 
     // nominal trajectory line
     const line = new THREE.Line(
@@ -635,12 +646,12 @@ class Component extends DCLogic {
     const FLOOR = 0;
     const shadowPts = curve.getPoints(240).map(p=>new THREE.Vector3(p.x, FLOOR+0.06, p.z));
     const shadow = new THREE.Line(new THREE.BufferGeometry().setFromPoints(shadowPts),
-      new THREE.LineBasicMaterial({ color:0x35424d, transparent:true, opacity:0.6 }));
+      new THREE.LineBasicMaterial({ color:0x0e3f25, transparent:true, opacity:0.38 }));
     scene.add(shadow);
 
     // ground grid
-    const grid = new THREE.GridHelper(150, 30, 0x283640, 0x121a22);
-    grid.position.y = FLOOR; grid.material.opacity = 0.5; grid.material.transparent = true;
+    const grid = new THREE.GridHelper(150, 30, 0x0e3f25, 0x06140d);
+    grid.position.y = FLOOR; grid.material.opacity = 0.34; grid.material.transparent = true;
     scene.add(grid);
 
     // --- WIREFRAME CITY -------------------------------------------------
@@ -658,8 +669,8 @@ class Component extends DCLogic {
       }
       return true;
     };
-    const cityMat = new THREE.LineBasicMaterial({ color:0x33465a, transparent:true, opacity:0.55 });
-    const cityMatLit = new THREE.LineBasicMaterial({ color:0x4a6076, transparent:true, opacity:0.75 });
+    const cityMat = new THREE.LineBasicMaterial({ color:0xe9fff1, transparent:true, opacity:0.16 });
+    const cityMatLit = new THREE.LineBasicMaterial({ color:0xe9fff1, transparent:true, opacity:0.24 });
     const rand = (seed)=>{ const x=Math.sin(seed*127.1+311.7)*43758.5453; return x-Math.floor(x); };
     const buildings = new THREE.Group();
     let bi=0;
@@ -682,18 +693,18 @@ class Component extends DCLogic {
           fl.push(-bw/2,y,-bd/2, bw/2,y,-bd/2,  bw/2,y,-bd/2, bw/2,y,bd/2,  bw/2,y,bd/2, -bw/2,y,bd/2,  -bw/2,y,bd/2, -bw/2,y,-bd/2);
         }
         const flr = new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(fl,3)),
-          new THREE.LineBasicMaterial({ color:0x2a3a49, transparent:true, opacity:0.32 }));
+          new THREE.LineBasicMaterial({ color:0x52ff86, transparent:true, opacity:0.10 }));
         flr.position.set(bx, 0, bz);
         buildings.add(flr);
       }
     }
     scene.add(buildings);
 
-    // --- NO-FLY ZONES (red keep-out airspace) ---------------------------
+    // --- NO-FLY ZONES (light red keep-out airspace) ---------------------
     const nfzH = 30;
-    const nfzSide = new THREE.MeshBasicMaterial({ color:0xef5a5f, transparent:true, opacity:0.10, side:THREE.DoubleSide, depthWrite:false });
-    const nfzFloor = new THREE.MeshBasicMaterial({ color:0xef5a5f, transparent:true, opacity:0.14, depthWrite:false });
-    const nfzEdge = new THREE.LineBasicMaterial({ color:0xef5a5f, transparent:true, opacity:0.55 });
+    const nfzSide = new THREE.MeshBasicMaterial({ color:0xff9aa2, transparent:true, opacity:0.075, side:THREE.DoubleSide, depthWrite:false });
+    const nfzFloor = new THREE.MeshBasicMaterial({ color:0xff9aa2, transparent:true, opacity:0.12, depthWrite:false });
+    const nfzEdge = new THREE.LineBasicMaterial({ color:0xff9aa2, transparent:true, opacity:0.72 });
     this.noFly.forEach(zn=>{
       const cyl = new THREE.Mesh(new THREE.CylinderGeometry(zn.r, zn.r, nfzH, 40, 1, true), nfzSide);
       cyl.position.set(zn.x, nfzH/2, zn.z); scene.add(cyl);
@@ -711,35 +722,62 @@ class Component extends DCLogic {
     this.path3d.forEach(p=>{
       const m=new THREE.Mesh(new THREE.OctahedronGeometry(0.8), wpMat); m.position.set(...p); scene.add(m);
       const drop=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(p[0],p[1],p[2]), new THREE.Vector3(p[0],FLOOR,p[2])]),
-        new THREE.LineBasicMaterial({ color:0x35424d, transparent:true, opacity:0.4 }));
+        new THREE.LineBasicMaterial({ color:0x0e3f25, transparent:true, opacity:0.35 }));
       scene.add(drop);
     });
 
-    // --- QUADCOPTER ------------------------------------------------------
+    // --- URBAN AIR MOBILITY VEHICLE --------------------------------------
     const drone = new THREE.Group();
-    const bodyMat = new THREE.MeshStandardMaterial({ roughness:0.35, metalness:0.35 });
-    const body = new THREE.Mesh(new THREE.BoxGeometry(1.5,0.5,1.5), bodyMat); drone.add(body);
-    const armMat = new THREE.MeshStandardMaterial({ color:0x9fb2c4, roughness:0.5, metalness:0.2 });
+    const bodyMat = new THREE.MeshStandardMaterial({ roughness:0.24, metalness:0.25, emissive:0x000000, emissiveIntensity:1, depthTest:false, depthWrite:false });
+    const armMat = new THREE.MeshStandardMaterial({ color:0xe9fff1, roughness:0.35, metalness:0.12, emissive:0x0e3f25, emissiveIntensity:0.35, depthTest:false, depthWrite:false });
+    const rotorMat = new THREE.MeshStandardMaterial({ color:0xe9fff1, roughness:0.25, metalness:0.18, emissive:0x52ff86, emissiveIntensity:0.7, transparent:true, opacity:0.96, depthTest:false, depthWrite:false });
+    const glassMat = new THREE.MeshStandardMaterial({ color:0xb8ffd0, roughness:0.18, metalness:0.05, emissive:0x123620, emissiveIntensity:0.5, transparent:true, opacity:0.72, depthTest:false, depthWrite:false });
+    const fuselage = new THREE.Mesh(new THREE.CylinderGeometry(0.34,0.44,2.7,18), bodyMat);
+    fuselage.rotation.x = Math.PI/2; fuselage.position.z = 0.05; drone.add(fuselage);
+    const nose = new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.34,0.55,18), bodyMat);
+    nose.rotation.x = Math.PI/2; nose.position.z = 1.68; drone.add(nose);
+    const cabin = new THREE.Mesh(new THREE.BoxGeometry(0.62,0.22,0.52), glassMat);
+    cabin.position.set(0,0.30,0.72); drone.add(cabin);
+    const wing = new THREE.Mesh(new THREE.BoxGeometry(3.7,0.07,0.38), armMat);
+    wing.position.set(0,0.04,0.06); drone.add(wing);
+    const tailWing = new THREE.Mesh(new THREE.BoxGeometry(1.55,0.06,0.28), armMat);
+    tailWing.position.set(0,0.18,-1.26); drone.add(tailWing);
+    const fin = new THREE.Mesh(new THREE.BoxGeometry(0.08,0.62,0.28), armMat);
+    fin.position.set(0,0.48,-1.42); drone.add(fin);
+
     const rotors = [];
-    const armLen = 1.6;
-    [[1,1],[1,-1],[-1,1],[-1,-1]].forEach(([sx,sz])=>{
-      const arm = new THREE.Mesh(new THREE.BoxGeometry(0.22,0.16,armLen*1.4), armMat);
-      arm.position.set(sx*armLen*0.5, 0, sz*armLen*0.5);
-      arm.lookAt(0,0,0); drone.add(arm);
-      const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.18,0.24,10), armMat);
-      hub.position.set(sx*armLen, 0.15, sz*armLen); drone.add(hub);
-      const rotor = new THREE.Mesh(new THREE.BoxGeometry(2.0,0.05,0.16),
-        new THREE.MeshStandardMaterial({ roughness:0.3, metalness:0.4, transparent:true, opacity:0.75 }));
-      rotor.position.set(sx*armLen, 0.32, sz*armLen); drone.add(rotor); rotors.push(rotor);
+    const addBoom = (sx)=>{
+      const boom = new THREE.Mesh(new THREE.BoxGeometry(0.11,0.10,2.95), armMat);
+      boom.position.set(sx*1.35,0.12,0.08); drone.add(boom);
+    };
+    [-1,1].forEach(addBoom);
+    [[-1,1.15],[1,1.15],[-1,0],[1,0],[-1,-1.15],[1,-1.15]].forEach(([sx,sz])=>{
+      const x = sx*1.35, z = sz;
+      const nacelle = new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.16,0.24,12), armMat);
+      nacelle.position.set(x,0.27,z); drone.add(nacelle);
+      const rotor = new THREE.Group();
+      rotor.position.set(x,0.42,z);
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.34,0.012,6,42), rotorMat);
+      ring.rotation.x = Math.PI/2; rotor.add(ring);
+      const bladeA = new THREE.Mesh(new THREE.BoxGeometry(0.9,0.035,0.09), rotorMat);
+      const bladeB = new THREE.Mesh(new THREE.BoxGeometry(0.09,0.035,0.9), rotorMat);
+      rotor.add(bladeA, bladeB);
+      drone.add(rotor); rotors.push(rotor);
     });
+    drone.scale.setScalar(0.42);
+    drone.traverse(o=>{ o.renderOrder = 12; });
     scene.add(drone);
-    const ellip = new THREE.Mesh(new THREE.SphereGeometry(1,24,18),
-      new THREE.MeshBasicMaterial({ wireframe:true, transparent:true, opacity:0.4 }));
+    const ellipPos = new Float32Array(RAD * 2 * 3);
+    const ellipGeo = new THREE.BufferGeometry();
+    ellipGeo.setAttribute('position', new THREE.BufferAttribute(ellipPos, 3));
+    const ellip = new THREE.LineSegments(ellipGeo,
+      new THREE.LineBasicMaterial({ transparent:true, opacity:0.78, depthTest:false, depthWrite:false }));
+    ellip.renderOrder = 6;
     scene.add(ellip);
 
     this.scene = scene; this.cam = cam; this.renderer = renderer;
     this.tube3d = [skin]; this.ringMat = rings.material; this.threadMats = threads.map(t=>t.material);
-    this.line3d = line; this.wpMeshes = wpMat; this.veh = drone; this.rotors = rotors; this.droneBodyMat = bodyMat; this.ellip = ellip;
+    this.line3d = line; this.wpMeshes = wpMat; this.veh = drone; this.rotors = rotors; this.droneBodyMat = bodyMat; this.droneArmMat = armMat; this.droneRotorMat = rotorMat; this.ellip = ellip; this.ellipPos = ellipPos;
     this.apply3DColors();
     this.resize3D();
   }
@@ -753,14 +791,18 @@ class Component extends DCLogic {
 
   apply3DColors(){
     if (!this.scene || !window.THREE) return;
-    const [r,g,b] = this._rgb((getComputedStyle(document.body).getPropertyValue('--accent')||'#35e0d8'));
+    const [r,g,b] = this._rgb(this.reachAccent());
     const col = new window.THREE.Color(r/255,g/255,b/255);
-    this.tube3d.forEach(m=>m.material.color=col);
-    this.ringMat.color = col;
+    const shell = new window.THREE.Color(0x0e3f25);
+    const wire = new window.THREE.Color(0xe9fff1);
+    this.tube3d.forEach(m=>m.material.color=shell);
+    this.ringMat.color = wire;
     this.threadMats.forEach(m=>m.color=col);
     this.line3d.material.color = col;
     this.wpMeshes.color = col; this.wpMeshes.emissive = col.clone().multiplyScalar(0.35);
-    if (this.droneBodyMat){ this.droneBodyMat.color = col; this.droneBodyMat.emissive = col.clone().multiplyScalar(0.3); }
+    if (this.droneBodyMat){ this.droneBodyMat.color = col; this.droneBodyMat.emissive = col.clone().multiplyScalar(0.75); }
+    if (this.droneArmMat){ this.droneArmMat.color = wire; this.droneArmMat.emissive = col.clone().multiplyScalar(0.22); }
+    if (this.droneRotorMat){ this.droneRotorMat.color = wire; this.droneRotorMat.emissive = col.clone().multiplyScalar(0.8); }
     this.ellip.material.color = col;
   }
 
@@ -775,13 +817,8 @@ class Component extends DCLogic {
   render3D(t){
     if (!this.renderer || this.state.view !== '3d') return;
     const THREE = window.THREE;
-    // limited, eased orbit that surveys the city without the screensaver spin
-    const ang = -0.5 + 0.5*Math.sin(t*0.09);
-    const rad = 92, hgt = 30 + Math.sin(t*0.14)*6;
-    this.cam.position.set(Math.cos(ang)*rad, hgt, Math.sin(ang)*rad);
-    this.cam.lookAt(0, 9, 0);
     // drone flies along curve, nose forward + slight bank into turns
-    const u = ((t*0.035)%1+1)%1;
+    const u = ((t*0.018)%1+1)%1;
     const p = this.curve3d.getPointAt(u);
     const tan = this.curve3d.getTangentAt(u).normalize();
     this.veh.position.copy(p);
@@ -799,17 +836,89 @@ class Component extends DCLogic {
     this.veh.rotateX(-tan.y*0.5);
     if (this.rotors) this.rotors.forEach((r,i)=>{ r.rotation.y = t*(i%2?38:-38); });
     const rr = this.reachRadius(u);
-    this.ellip.position.copy(p);
-    this.ellip.scale.set(rr, rr*0.68, rr);
+    const fi = Math.max(0, Math.min(this.seg3d, Math.round(u*this.seg3d)));
+    const N = this.frames3d.normals[fi], B = this.frames3d.binormals[fi];
+    const pos = this.ellipPos;
+    for (let j=0;j<this.rad3d;j++){
+      const a0=j/this.rad3d*Math.PI*2, a1=(j+1)/this.rad3d*Math.PI*2;
+      const p0=p.clone().add(N.clone().multiplyScalar(Math.cos(a0)*rr)).add(B.clone().multiplyScalar(Math.sin(a0)*rr*0.68));
+      const p1=p.clone().add(N.clone().multiplyScalar(Math.cos(a1)*rr)).add(B.clone().multiplyScalar(Math.sin(a1)*rr*0.68));
+      const k=j*6;
+      pos[k]=p0.x; pos[k+1]=p0.y; pos[k+2]=p0.z;
+      pos[k+3]=p1.x; pos[k+4]=p1.y; pos[k+5]=p1.z;
+    }
+    this.ellip.geometry.attributes.position.needsUpdate = true;
+    this.ellip.geometry.computeBoundingSphere();
+
+    // third-person follow: yaw with the vehicle, keep the camera horizon level
+    const flatTan = new THREE.Vector3(tan.x, 0, tan.z).normalize();
+    const camPos = p.clone().add(flatTan.clone().multiplyScalar(-23));
+    camPos.y += 16;
+    const camTarget = p.clone().add(flatTan.clone().multiplyScalar(12));
+    camTarget.y += 2.4;
+    if (!this._followPos){
+      this._followPos = camPos.clone();
+      this._followTarget = camTarget.clone();
+    } else {
+      this._followPos.lerp(camPos, 0.08);
+      this._followTarget.lerp(camTarget, 0.10);
+    }
+    this.cam.position.copy(this._followPos);
+    this.cam.lookAt(this._followTarget);
     this.renderer.render(this.scene, this.cam);
   }
+
+  reachReadoutFrame(t){
+    const rows = [
+      {
+        title:'FLOW TUBE',
+        meta:'PREDICTED SAFE SPACE',
+        body:'show every place the aircraft could be during this part of the mission, not just the planned path.'
+      },
+      {
+        title:'SAFETY MARGIN',
+        meta:'WIND AND CONTROL LIMITS',
+        body:'add room for gusts, motor limits, and tracking error so the tube covers real flight uncertainty.'
+      },
+      {
+        title:'SEPARATION CHECK',
+        meta:'CLEAR OF KEEP-OUT ZONES',
+        body:'if the whole tube stays outside restricted airspace, the route is cleared before flight instead of only tested afterward.'
+      }
+    ];
+    const cycle = 8.2;
+    const phase = ((t % (cycle * rows.length)) + cycle * rows.length) % (cycle * rows.length);
+    const idx = Math.floor(phase / cycle);
+    const local = phase - idx * cycle;
+    const row = rows[idx];
+    const titleLetters = Math.min(row.title.length, Math.floor(Math.max(0, local - 0.25) * 18));
+    const metaLetters = Math.min(row.meta.length, Math.floor(Math.max(0, local - 0.75) * 20));
+    const bodyLetters = Math.min(row.body.length, Math.floor(Math.max(0, local - 1.35) * 32));
+    return {
+      title: row.title.slice(0, titleLetters),
+      meta: row.meta.slice(0, metaLetters),
+      body: '> ' + row.body.slice(0, bodyLetters)
+    };
+  }
+
+  updateReachReadout(t){
+    const titleEl = this.reachReadoutTitle.current;
+    const metaEl = this.reachReadoutMeta.current;
+    const bodyEl = this.reachReadoutBody.current;
+    if (!titleEl || !metaEl || !bodyEl) return;
+    const frame = this.reachReadoutFrame(t);
+    if (titleEl.textContent !== frame.title) titleEl.textContent = frame.title;
+    if (metaEl.textContent !== frame.meta) metaEl.textContent = frame.meta;
+    if (bodyEl.textContent !== frame.body) bodyEl.textContent = frame.body;
+  }
+
   componentDidUpdate(){
     this.applyAccent();
     this.apply3DColors();
     if (this.state.view === '3d') this.resize3D();
     const want = this.props.heroMotion !== false;
     if (want && !this.motion){ this.motion = true; this.raf = requestAnimationFrame(this._loop); }
-    if (!want && this.motion){ this.motion = false; cancelAnimationFrame(this.raf); const s=(performance.now()-this.t0)/1000; this.draw(s); this.drawReach(s); }
+    if (!want && this.motion){ this.motion = false; cancelAnimationFrame(this.raf); const s=(performance.now()-this.t0)/1000; this.draw(s); this.drawReach(s); this.updateReachReadout(s); }
   }
   componentWillUnmount(){ cancelAnimationFrame(this.raf); clearTimeout(this._t3d); window.removeEventListener('resize', this._onResize); }
 
@@ -821,7 +930,7 @@ class Component extends DCLogic {
     if (cv.width !== w*dpr || cv.height !== h*dpr){ cv.width = w*dpr; cv.height = h*dpr; }
     ctx.setTransform(dpr,0,0,dpr,0,0);
     ctx.clearRect(0,0,w,h);
-    const accent = (getComputedStyle(document.body).getPropertyValue('--accent')||'#35e0d8').trim();
+    const accent = this.hudAccent();
     const [ar,ag,ab] = this._rgb(accent);
     const A = (a)=>`rgba(${ar},${ag},${ab},${a})`;
     const DEG = Math.PI/180;
@@ -831,7 +940,10 @@ class Component extends DCLogic {
     const rollDeg  = Math.sin(t*0.24)*8 + Math.sin(t*0.11)*3;
     const roll     = rollDeg*DEG;
     const pitchDeg = Math.sin(t*0.19)*5 + 2;
-    const hdg      = (12 + t*1.6) % 360;
+    const dt = this._hudLastT == null ? 0 : Math.min(0.05, Math.max(0, t - this._hudLastT));
+    this._hudLastT = t;
+    this._hudHeading = this._hudHeading == null ? 12 : (this._hudHeading + Math.tan(roll) * 28 * dt + 360) % 360;
+    const hdg = this._hudHeading;
     const spd      = 118 + Math.sin(t*0.33)*5;
     const alt      = 2450 + Math.sin(t*0.14)*70;
     const ppd      = h/48;               // pixels per degree of pitch
@@ -892,16 +1004,7 @@ class Component extends DCLogic {
         return;
       }
       const c=Math.cos(th), s=Math.sin(th);
-      if (m===30 || m===45 || m===60){
-        // triangle tick
-        ctx.beginPath();
-        ctx.moveTo(c*Rb, s*Rb);
-        ctx.lineTo(c*(Rb+len)-s*4, s*(Rb+len)+c*4);
-        ctx.lineTo(c*(Rb+len)+s*4, s*(Rb+len)-c*4);
-        ctx.closePath(); ctx.stroke();
-      } else {
-        ctx.beginPath(); ctx.moveTo(c*Rb, s*Rb); ctx.lineTo(c*(Rb+len), s*(Rb+len)); ctx.stroke();
-      }
+      ctx.beginPath(); ctx.moveTo(c*Rb, s*Rb); ctx.lineTo(c*(Rb+len), s*(Rb+len)); ctx.stroke();
     });
     // rolling sky pointer (rides just inside arc at current bank)
     const pth = (-90 + rollDeg)*DEG, pc=Math.cos(pth), ps=Math.sin(pth);
@@ -1032,8 +1135,10 @@ class Component extends DCLogic {
     if (cv.width !== w*dpr || cv.height !== h*dpr){ cv.width = w*dpr; cv.height = h*dpr; }
     ctx.setTransform(dpr,0,0,dpr,0,0);
     ctx.clearRect(0,0,w,h);
-    const [r,g,b] = this._rgb((getComputedStyle(document.body).getPropertyValue('--accent')||'#35e0d8'));
+    const [r,g,b] = this._rgb(this.reachAccent());
     const A = (a)=>`rgba(${r},${g},${b},${a})`;
+    const warn = '255,154,162';
+    const W = (a)=>`rgba(${warn},${a})`;
 
     // world (x,z) -> top-down pixels, matching the 3D scene extents
     const pad=44, s=Math.min((w-2*pad)/132,(h-2*pad)/104), ox=w/2, oy=h/2;
@@ -1056,43 +1161,44 @@ class Component extends DCLogic {
       const bw=7+this._rand(bi*3.1)*4, bd=7+this._rand(bi*4.9)*4, bh=6+this._rand(bi*5.5)*22;
       if(!clears(bx,bz,bw,bd,bh)) continue;
       const tl=P(bx-bw/2,bz-bd/2), br=P(bx+bw/2,bz+bd/2);
-      const shade=0.10+0.16*(bh/28);
-      ctx.fillStyle=`rgba(40,54,68,${shade})`; ctx.strokeStyle=`rgba(80,108,138,${0.35+0.3*(bh/28)})`;
+      const shade=0.04+0.05*(bh/28);
+      ctx.fillStyle=`rgba(14,63,37,${shade})`; ctx.strokeStyle=`rgba(233,255,241,${0.08+0.12*(bh/28)})`;
       ctx.beginPath(); ctx.rect(tl.x,tl.y,br.x-tl.x,br.y-tl.y); ctx.fill(); ctx.stroke();
     }}
 
-    // ---- no-fly zones (red keep-out) ----
+    // ---- no-fly zones (light red keep-out) ----
     ctx.font="9px 'IBM Plex Mono', monospace"; ctx.textAlign='center';
     this.noFly.forEach((zn,i)=>{ const zp=P(zn.x,zn.z), zr=zn.r*s;
       ctx.beginPath(); ctx.arc(zp.x,zp.y,zr,0,Math.PI*2);
-      ctx.fillStyle='rgba(239,90,95,.13)'; ctx.fill();
-      ctx.setLineDash([5,4]); ctx.strokeStyle='rgba(239,90,95,.85)'; ctx.lineWidth=1.3; ctx.stroke(); ctx.setLineDash([]);
-      ctx.fillStyle='rgba(239,90,95,.9)'; ctx.fillText('NFZ-0'+(i+1), zp.x, zp.y-zr-6);
+      ctx.fillStyle=W(.11); ctx.fill();
+      ctx.setLineDash([5,4]); ctx.strokeStyle=W(.88); ctx.lineWidth=1.3; ctx.shadowColor=W(.32); ctx.shadowBlur=6; ctx.stroke(); ctx.shadowBlur=0; ctx.setLineDash([]);
+      ctx.fillStyle=W(.92); ctx.fillText('NFZ-0'+(i+1), zp.x, zp.y-zr-6);
     });
 
     // ---- reachable-set tube ----
     const top=[],bot=[];
     for(let i=0;i<=SEG;i++){ const n=norm(i), hw=rad[i]*s; top.push({x:trackPx[i].x+n.nx*hw,y:trackPx[i].y+n.ny*hw}); bot.push({x:trackPx[i].x-n.nx*hw,y:trackPx[i].y-n.ny*hw}); }
     ctx.beginPath(); ctx.moveTo(top[0].x,top[0].y); top.forEach(p=>ctx.lineTo(p.x,p.y)); for(let i=SEG;i>=0;i--) ctx.lineTo(bot[i].x,bot[i].y); ctx.closePath();
-    const gr=ctx.createLinearGradient(0,0,w,0); gr.addColorStop(0,A(.06)); gr.addColorStop(.5,A(.17)); gr.addColorStop(1,A(.08));
+    const gr=ctx.createLinearGradient(0,0,w,0); gr.addColorStop(0,'rgba(14,63,37,.10)'); gr.addColorStop(.5,A(.18)); gr.addColorStop(1,'rgba(14,63,37,.12)');
     ctx.fillStyle=gr; ctx.fill();
-    ctx.setLineDash([6,5]); ctx.strokeStyle=A(.5); ctx.lineWidth=1.2;
+    ctx.setLineDash([6,5]); ctx.strokeStyle='rgba(233,255,241,.54)'; ctx.lineWidth=1.2; ctx.shadowColor=A(.34); ctx.shadowBlur=7;
     ctx.beginPath(); top.forEach((p,i)=> i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y)); ctx.stroke();
     ctx.beginPath(); bot.forEach((p,i)=> i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y)); ctx.stroke(); ctx.setLineDash([]);
+    ctx.shadowBlur=0;
 
     // nominal flight track
     ctx.beginPath(); trackPx.forEach((p,i)=> i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
-    ctx.strokeStyle=A(.95); ctx.lineWidth=2; ctx.shadowColor=A(.6); ctx.shadowBlur=8; ctx.stroke(); ctx.shadowBlur=0;
+    ctx.strokeStyle=A(1); ctx.lineWidth=2.2; ctx.shadowColor=A(.82); ctx.shadowBlur=10; ctx.stroke(); ctx.shadowBlur=0;
 
     // waypoints
     ctx.font="10px 'IBM Plex Mono', monospace"; ctx.textAlign='center';
     this.route.forEach((rp,idx)=>{ const p=P(rp[0],rp[1]);
       ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(Math.PI/4);
       ctx.fillStyle=A(.9); ctx.fillRect(-4,-4,8,8); ctx.strokeStyle='rgba(6,9,15,.9)'; ctx.lineWidth=1.4; ctx.strokeRect(-4,-4,8,8); ctx.restore();
-      ctx.fillStyle='rgba(200,215,225,.7)'; ctx.fillText('WP'+String(idx).padStart(2,'0'), p.x, p.y-11);
+      ctx.fillStyle=A(.72); ctx.fillText('WP'+String(idx).padStart(2,'0'), p.x, p.y-11);
     });
 
-    const u=((t*0.035)%1+1)%1;
+    const u=((t*0.018)%1+1)%1;
 
     // drone marker (smoothed track) + uncertainty ellipse
     const dc=this._crXZ(this.route,u), dp=P(dc.x,dc.z);
@@ -1103,27 +1209,28 @@ class Component extends DCLogic {
     ctx.beginPath(); ctx.arc(dp.x,dp.y,3.6,0,Math.PI*2); ctx.fillStyle=A(1); ctx.fill();
     ctx.beginPath(); ctx.arc(dp.x,dp.y,7,0,Math.PI*2); ctx.strokeStyle=A(.5); ctx.lineWidth=1; ctx.stroke();
 
-    // corner annunciation
-    ctx.fillStyle=A(.55); ctx.font="500 9px 'IBM Plex Mono', monospace"; ctx.textAlign='right';
-    ctx.fillText('AUTONOMY · NOMINAL', w-16, h-16); ctx.textAlign='center';
+    ctx.textAlign='center';
   }
 
   renderVals(){
     const is3d = this.state.view === '3d';
-    const accent = (this.props.accentColor || '#35e0d8');
+    const reachAccent = '#52ff86';
     return {
       heroCanvas: this.canvasRef,
       reachCanvas: this.reachRef,
       reach3dCanvas: this.reachRef3d,
+      reachReadoutTitle: this.reachReadoutTitle,
+      reachReadoutMeta: this.reachReadoutMeta,
+      reachReadoutBody: this.reachReadoutBody,
       scanlines: this.props.scanlines !== false,
       show2d: () => this.setState({ view:'2d' }),
       show3d: () => { if (!this.no3d) this.setState({ view:'3d' }); },
       show2dCanvas: is3d ? 'none' : 'block',
       show3dCanvas: is3d ? 'block' : 'none',
-      tab2dBg: is3d ? 'transparent' : accent,
+      tab2dBg: is3d ? 'transparent' : reachAccent,
       tab2dColor: is3d ? '#8a97a8' : '#04120f',
       tab2dWeight: is3d ? '400' : '600',
-      tab3dBg: is3d ? accent : 'transparent',
+      tab3dBg: is3d ? reachAccent : 'transparent',
       tab3dColor: is3d ? '#04120f' : '#8a97a8',
       tab3dWeight: is3d ? '600' : '400',
       tab3dDisplay: this.no3d ? 'none' : 'inline-block'
