@@ -7,7 +7,7 @@ const requiredFiles = [
   'site/index.html',
   'site/.nojekyll',
   'site/assets/cognipilot-logo-dark.png',
-  'site/assets/brain-poly-google.glb',
+  'site/assets/brain-lowpoly-cognipilot.glb',
   'site/assets/nxp-logo.svg',
   'site/assets/purdue-university-logo.svg',
   'site/platform-brain.js',
@@ -124,6 +124,12 @@ if (!home.includes('Three principles') || !home.includes('Urban Air Mobility Rea
 }
 if (!home.includes('When Autopilots Start to Reason.') || !home.includes('platform-brain.js')) {
   fail('Published homepage is missing the platform brain section.');
+}
+if (!home.includes('brain-lowpoly-cognipilot.glb')) {
+  fail('Published homepage is missing the original CogniPilot brain model.');
+}
+if (home.includes('brain-poly-google') || home.includes('platform-brain-info-button')) {
+  fail('Published homepage still contains the attributed Google brain model UI.');
 }
 if (!home.includes('width:min(100%,1320px)')) fail('Mission page header normalization is missing.');
 if (!home.includes("membership.href = 'membership/'") || !home.includes("events.href = 'events/'")) {

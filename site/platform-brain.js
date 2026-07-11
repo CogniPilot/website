@@ -266,75 +266,6 @@
         color: #52ff86;
         animation: platform-brain-cursor 1s steps(2, start) infinite;
       }
-      .platform-brain-info-button {
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        z-index: 6;
-        display: grid;
-        place-items: center;
-        width: 30px;
-        height: 30px;
-        border: 1px solid rgba(82,255,134,.42);
-        border-radius: 50%;
-        background: rgba(4, 12, 7, .72);
-        color: #b8ffd0;
-        font: 700 13px "IBM Plex Mono", ui-monospace, monospace;
-        line-height: 1;
-        text-shadow: 0 0 8px rgba(82,255,134,.85);
-        box-shadow:
-          inset 0 0 12px rgba(82,255,134,.08),
-          0 0 14px rgba(82,255,134,.12);
-        cursor: pointer;
-      }
-      .platform-brain-info-button:hover,
-      .platform-brain-info-button:focus-visible,
-      .platform-brain-info-button[aria-expanded="true"] {
-        border-color: rgba(82,255,134,.85);
-        color: #52ff86;
-        outline: 0;
-        box-shadow:
-          inset 0 0 14px rgba(82,255,134,.12),
-          0 0 18px rgba(82,255,134,.28);
-      }
-      .platform-brain-credit-panel {
-        position: absolute;
-        top: 52px;
-        right: 12px;
-        z-index: 6;
-        width: min(320px, calc(100% - 24px));
-        padding: 13px 14px 14px;
-        border: 1px solid rgba(82,255,134,.34);
-        border-radius: 4px;
-        background: rgba(4, 12, 7, .90);
-        color: #d2ffe0;
-        font-family: "IBM Plex Mono", ui-monospace, monospace;
-        box-shadow:
-          inset 0 0 18px rgba(82,255,134,.08),
-          0 0 24px rgba(82,255,134,.16);
-        text-shadow: 0 0 8px rgba(82,255,134,.42);
-      }
-      .platform-brain-credit-panel[hidden] {
-        display: none;
-      }
-      .platform-brain-credit-panel strong {
-        display: block;
-        color: #52ff86;
-        font-size: 11px;
-        letter-spacing: .15em;
-        text-transform: uppercase;
-      }
-      .platform-brain-credit-panel p {
-        margin: 8px 0 0;
-        color: rgba(210,255,224,.84);
-        font-size: 11px;
-        line-height: 1.45;
-        letter-spacing: .02em;
-      }
-      .platform-brain-credit-panel a {
-        color: #52ff86;
-        border-bottom: 1px solid rgba(82,255,134,.45);
-      }
       .platform-brain-copy {
         display: grid;
         gap: 16px;
@@ -465,37 +396,11 @@
     });
   }
 
-  function initCreditPanel(stage) {
-    const infoButton = stage.querySelector('.platform-brain-info-button');
-    const creditPanel = stage.querySelector('.platform-brain-credit-panel');
-    if (!infoButton || !creditPanel) return;
-
-	    function setOpen(open) {
-	      creditPanel.hidden = !open;
-	      infoButton.setAttribute('aria-expanded', String(open));
-	    }
-
-	    setOpen(false);
-	    infoButton.addEventListener('click', (event) => {
-	      event.stopPropagation();
-	      setOpen(creditPanel.hidden);
-    });
-    creditPanel.addEventListener('click', (event) => event.stopPropagation());
-    document.addEventListener('click', (event) => {
-      if (creditPanel.hidden) return;
-      if (event.target !== infoButton && !creditPanel.contains(event.target)) setOpen(false);
-    });
-    window.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') setOpen(false);
-    });
-  }
-
 	  function initStage(stage) {
 	    if (stage.__platformBrainInitialized === true) return;
 	    stage.__platformBrainInitialized = true;
 	    stage.dataset.platformBrainInitialized = 'true';
 	    injectStyles();
-	    initCreditPanel(stage);
 
     const canvas = stage.querySelector('.platform-brain-canvas');
     const calloutLine = stage.querySelector('.platform-brain-callout-line');
@@ -755,7 +660,7 @@
 
       const loader = new THREE.GLTFLoader();
       loader.load(
-        stage.dataset.model || 'assets/brain-poly-google.glb',
+        stage.dataset.model || 'assets/brain-lowpoly-cognipilot.glb',
         (gltf) => {
           const root = gltf.scene || (gltf.scenes && gltf.scenes[0]);
           if (!root) throw new Error('Brain GLB did not contain a scene.');
