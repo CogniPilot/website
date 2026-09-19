@@ -24,6 +24,7 @@ support.js            runtime used by the design source while editing
 assets/               logo art
 site/index.html       compiled, self-contained site (this is what gets published)
 site/blog/            static blog index, posts, assets, and example manifests
+site/brand/           brand guide, SVG/PNG downloads, and media kit
 site/.nojekyll        tells GitHub Pages to serve files as-is
 .github/workflows/    Pages deploy workflow
 ```
@@ -70,3 +71,16 @@ fresh `site/index.html`.
 
 Add a `CNAME` file to `site/` containing the domain (e.g. `www.cognipilot.com`)
 and configure the DNS records GitHub shows under **Settings → Pages**.
+
+## Brand assets
+
+The [brand guide](site/brand/index.html) includes downloadable SVG and PNG logos
+for CogniPilot, ZROS, and Rumoca.
+Its logo exports and [written guidelines](site/brand/assets/BRAND_GUIDELINES.md)
+are mirrored from the CogniPilot artwork repository under site/brand/assets/.
+The page uses relative asset paths and works both on GitHub Pages under the
+website subdirectory and on a custom domain.
+
+The media kit includes the current logo exports and written guide.
+Keep the media kit ZIP and mirrored artwork aligned when updating logo files.
+The guidelines are a review edition, with suggested clear space and minimum sizes.
