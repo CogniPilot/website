@@ -219,6 +219,12 @@ document.addEventListener('DOMContentLoaded', async function() {
             const github = Array.from(navGroup.querySelectorAll('a')).find(function(a) { return a.textContent.trim().indexOf('GitHub') === 0; });
             navGroup.insertBefore(blog, github || null);
           }
+          if (!navGroup.querySelector('a[href="brand/"]')) {
+            const brand = document.createElement('a');
+            brand.href = 'brand/';
+            brand.textContent = 'Brand';
+            navGroup.appendChild(brand);
+          }
           Array.from(navGroup.querySelectorAll('a')).forEach(function(a) {
             const label = a.textContent.trim();
             if (label.indexOf('GitHub') === 0) {
